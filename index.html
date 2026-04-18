@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сейф 713 — Магічні загадки Гоґвортсу</title>
-    <meta name="description" content="Розв'яжіть магічні загадки про світ Гаррі Поттера, щоб відкрити таємничий Сейф 713. Інтерактивна гра для справжніх фанатів магії та пригод.">
+    <meta name="description"
+        content="Розв'яжіть магічні загадки про світ Гаррі Поттера, щоб відкрити таємничий Сейф 713. Інтерактивна гра для справжніх фанатів магії та пригод.">
     <meta name="keywords" content="Гаррі Поттер, Гоґвортс, Сейф 713, магія, загадки, квест, інтерактивна гра, квідич">
     <meta name="author" content="Пан Артем">
 
@@ -13,20 +14,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://milamiplay.github.io/">
     <meta property="og:title" content="Сейф 713 — Магічні загадки Гоґвортсу">
-    <meta property="og:description" content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
+    <meta property="og:description"
+        content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
     <meta property="og:image" content="https://milamiplay.github.io/og-preview.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://milamiplay.github.io/">
     <meta property="twitter:title" content="Сейф 713 — Магічні загадки Гоґвортсу">
-    <meta property="twitter:description" content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
+    <meta property="twitter:description"
+        content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
     <meta property="twitter:image" content="https://milamiplay.github.io/og-preview.png">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://milamiplay.github.io/og-preview.png">
     <link rel="apple-touch-icon" href="https://milamiplay.github.io/og-preview.png">
-    
+
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
     {
@@ -981,7 +984,6 @@
                     <h1 class="scroll__title" id="riddles-title">Загадки сховища</h1>
                     <p class="scroll__intro">Розв’яжи 4 загадки. Кожна правильна відповідь дає одну цифру для замка.</p>
                     <ol class="question-list" id="questions-list"></ol>
-
                 </div>
             </section>
 
@@ -998,9 +1000,11 @@
                 <div class="door" id="door" aria-live="polite">
                     <div class="door-highlight" aria-hidden="true"></div>
                     <h2 class="safe-title">713</h2>
+                    <p class="safe-status" id="status-text">Введи 4 цифри та поверни рукоятку.</p>
                     <div class="error-text" aria-hidden="true">ERROR</div>
 
                     <div class="lock-panel" aria-label="Кодовий замок">
+                        <p class="lock-panel__legend">Код замка</p>
                         <div class="digits" role="group" aria-label="Чотири цифри коду">
                             <div class="digit-group" data-index="0">
                                 <button class="digit-btn" type="button" data-action="up"
@@ -1255,6 +1259,7 @@
                 elements.door.classList.remove('error');
                 void elements.door.offsetWidth;
                 elements.door.classList.add('error');
+                updateStatus('Неправильний код. Спробуй ще раз.');
 
                 clearTimeout(STATE.errorTimeout);
                 STATE.errorTimeout = window.setTimeout(() => {
