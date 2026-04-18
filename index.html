@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сейф 713 - Симулятор</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #2a2d34 0%, #0d0f12 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Crimson Text', serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            gap: 50px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- Сувій з питаннями --- */
+        #scroll {
+            flex: 1;
+            background-color: #eaddc5;
+            background-image:
+                linear-gradient(rgba(139, 69, 19, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 69, 19, 0.15) 0%, transparent 40%);
+            color: #3e2723;
+            padding: 40px 50px;
+            height: 90%;
+            border-radius: 5px 25px 5px 25px;
+            box-shadow:
+                10px 10px 30px rgba(0, 0, 0, 0.7),
+                inset 0 0 40px rgba(139, 69, 19, 0.4),
+                inset -5px -5px 15px rgba(139, 69, 19, 0.6);
+            position: relative;
+            transform: rotate(-1deg);
+            overflow-y: auto;
+        }
+
+        #scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #scroll::-webkit-scrollbar-track {
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 4px;
+        }
+
+        #scroll::-webkit-scrollbar-thumb {
+            background: #8b4513;
+            border-radius: 4px;
+        }
+
+        #scroll::before,
+        #scroll::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(to bottom, #5d4037, #3e2723);
+            border-radius: 10px;
+        }
+
+        #scroll::before {
+            top: -5px;
+        }
+
+        #scroll::after {
+            bottom: -5px;
+        }
+
+        #scroll h2 {
+            font-family: 'Cinzel Decorative', serif;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #8d6e63;
+            padding-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        #scroll ol {
+            padding-left: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: bold;
+        }
+
+        #scroll li {
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- Сейф --- */
+        #safe-wrapper {
+            flex: 1.2;
+            height: 90%;
+            position: relative;
+            perspective: 1500px;
+            background: linear-gradient(135deg, #33363b, #15171a);
+            border: 20px solid #1a1c20;
+            border-radius: 10px;
+            box-shadow:
+                20px 20px 50px rgba(0, 0, 0, 0.9),
+                inset 0 0 20px rgba(0, 0, 0, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Заклепки на корпусі */
+        #safe-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 10px 10px, #555 3px, #111 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) 10px, #555 3px, #111 4px, transparent 5px),
+                radial-gradient(circle at 10px calc(100% - 10px), #555 3px, #111 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) calc(100% - 10px), #555 3px, #111 4px, transparent 5px);
+            z-index: 5;
+        }
+
+        /* Інтер'єр (відкритий сейф) */
+        #interior {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, #1a0f0f, #000);
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* Філософський камінь */
+        .stone-glow {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 20, 20, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulseGlow 2s infinite alternate;
+            z-index: 2;
+        }
+
+        .stone {
+            width: 90px;
+            height: 110px;
+            background: linear-gradient(135deg, #ff1a1a 0%, #b30000 40%, #660000 100%);
+            clip-path: polygon(45% 5%, 65% 0%, 90% 20%, 100% 45%, 85% 85%, 55% 100%, 20% 90%, 0% 60%, 10% 25%);
+            box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.9), inset 10px 10px 25px rgba(255, 150, 150, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .stone::before {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 10%;
+            right: 15%;
+            bottom: 10%;
+            background: linear-gradient(70deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 40%);
+            clip-path: polygon(50% 0%, 100% 30%, 80% 100%, 20% 100%, 0% 30%);
+        }
+
+        .stone::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(105deg, rgba(255, 255, 255, 0.9) 0%, transparent 30%);
+            clip-path: polygon(20% 20%, 80% 10%, 90% 80%, 10% 90%);
+        }
+
+        @keyframes pulseGlow {
+            from {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            to {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .next-btn {
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: linear-gradient(to bottom, #d4af37, #997a00);
+            border: 2px solid #ffd700;
+            color: #111;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            transition: 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            z-index: 50;
+        }
+
+        .next-btn:hover {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 1);
+            transform: translateY(20px) scale(1.05);
+        }
+
+        /* Дверцята */
+        #door {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #4f565e 0%, #2c3035 40%, #1d2024 100%);
+            border: 15px solid;
+            border-color: #7a848f #1a1c20 #1a1c20 #7a848f;
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+            transform-style: preserve-3d;
+        }
+
+        /* Відкритий стан */
+        #door.open {
+            transform: rotateY(-105deg);
+        }
+
+        #door.open~#interior .next-btn {
+            opacity: 1;
+            pointer-events: all;
+            transition-delay: 1s;
+        }
+
+        /* Помилка - трясіння і червоне блимання */
+        #door.error {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        #door.error::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 0, 0, 0.2);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .error-text {
+            position: absolute;
+            top: 120px;
+            color: #ff3333;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 55px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 30;
+            letter-spacing: 5px;
+        }
+
+        #door.error .error-text {
+            opacity: 1;
+            animation: blink 0.2s infinite alternate;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1;
+                text-shadow: 0 0 10px #ff0000;
+            }
+
+            to {
+                opacity: 0.5;
+                text-shadow: 0 0 30px #ff0000, 0 0 40px darkred;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-15px);
+            }
+
+            40% {
+                transform: translateX(15px);
+            }
+
+            60% {
+                transform: translateX(-10px);
+            }
+
+            80% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* Деталі дверцят */
+        .vault-number {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 70px;
+            font-weight: bold;
+            color: #222;
+            text-shadow:
+                -1px -1px 1px rgba(255, 255, 255, 0.2),
+                2px 2px 3px rgba(0, 0, 0, 0.8);
+            margin-bottom: 50px;
+            letter-spacing: 5px;
+            background: linear-gradient(to bottom, #b39700, #ffeb85, #8a7300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        /* Кодовий замок */
+        .lock-container {
+            background: linear-gradient(to bottom, #111, #222);
+            padding: 20px;
+            border-radius: 10px;
+            border: 4px solid #444;
+            border-top-color: #222;
+            border-left-color: #222;
+            box-shadow: inset 0 0 15px #000, 0 10px 20px rgba(0, 0, 0, 0.8);
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .digit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .digit-btn {
+            background: linear-gradient(to bottom, #555, #333);
+            border: 1px solid #111;
+            color: #aaa;
+            width: 40px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.2), 1px 1px 3px #000;
+        }
+
+        .digit-btn:active {
+            background: #222;
+            box-shadow: inset 2px 2px 5px #000;
+        }
+
+        .digit-display {
+            width: 50px;
+            height: 70px;
+            background: #0a0a0a;
+            border: 2px solid #000;
+            box-shadow: inset 0 5px 10px #000, 0 2px 0 rgba(255, 255, 255, 0.1);
+            color: #e0d0b0;
+            font-family: 'Cinzel Decorative', monospace;
+            font-size: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px 0;
+            text-shadow: 0 0 5px rgba(224, 208, 176, 0.5);
+        }
+
+        /* Ручка сейфа */
+        .handle-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d2024, #33363b);
+            box-shadow:
+                inset 5px 5px 10px rgba(0, 0, 0, 0.8),
+                inset -2px -2px 5px rgba(255, 255, 255, 0.1),
+                0 10px 20px rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .handle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #555, #999, #444, #777, #333, #888, #555);
+            border: 5px solid #222;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.5s;
+        }
+
+        .handle::before,
+        .handle::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(to bottom, #888, #444);
+            border: 2px solid #222;
+            box-shadow: 0 2px 5px #000;
+        }
+
+        /* Спиці ручки */
+        .handle::before {
+            top: -20px;
+            bottom: -20px;
+            left: 40px;
+            right: 40px;
+        }
+
+        .handle::after {
+            left: -20px;
+            right: -20px;
+            top: 40px;
+            bottom: 40px;
+        }
+
+        .handle-center {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #222, #000);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .handle:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Анімація повороту ручки при успіху */
+        #door.success .handle {
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 900px) {
+            #container {
+                flex-direction: column;
+                height: auto;
+                padding: 20px 0;
+            }
+
+            #scroll,
+            #safe-wrapper {
+                width: 100%;
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #scroll {
+                padding: 20px;
+            }
+
+            #scroll h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+
+            #scroll ol {
+                font-size: 14px;
+                margin-bottom: 0;
+                line-height: 1.4;
+            }
+
+            #scroll li {
+                margin-bottom: 10px;
+            }
+
+            #safe-wrapper {
+                min-height: 400px;
+            }
+
+            .vault-number {
+                font-size: 50px;
+                margin-bottom: 25px;
+            }
+
+            .error-text {
+                font-size: 40px;
+                top: 80px;
+            }
+
+            .lock-container {
+                gap: 10px;
+                padding: 15px;
+                margin-bottom: 30px;
+            }
+
+            .digit-display {
+                width: 40px;
+                height: 50px;
+                font-size: 30px;
+            }
+
+            .digit-btn {
+                width: 35px;
+            }
+
+            .handle-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+
+            .handle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .handle::before {
+                top: -15px;
+                bottom: -15px;
+                left: 25px;
+                right: 25px;
+            }
+
+            .handle::after {
+                left: -15px;
+                right: -15px;
+                top: 25px;
+                bottom: 25px;
+            }
+
+            .handle-center {
+                top: 20px;
+                left: 20px;
+                width: 20px;
+                height: 20px;
+            }
+
+            #door {
+                padding-top: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="scroll">
+            <h2>Загадки Сховища</h2>
+            <ol>
+                <li>Скільки голів у собаки-охоронця Пушка?</li>
+                <li>Номер платформи (ціла частина), з якої рушає Гоґвортс-Експрес?</li>
+                <li>Скільки факультетів у школі Гоґвортс?</li>
+                <li>Скільки братів у Рона Візлі (без урахування його самого)?</li>
+            </ol>
+        </div>
+
+        <div id="safe-wrapper">
+            <div id="interior">
+                <div class="stone-glow">
+                    <div class="stone"></div>
+                </div>
+                <button class="next-btn" onclick="alert('Перехід до наступного завдання...')">Наступне завдання</button>
+            </div>
+
+            <div id="door">
+                <div class="vault-number">713</div>
+                <div class="error-text">ERROR</div>
+
+                <div class="lock-container">
+                    <div class="digit-group">
+                        <button class="digit-btn" onclick="changeDigit(0, 1)">▲</button>
+                        <div class="digit-display" id="digit-0">0</div>
+                        <button class="digit-btn" onclick="changeDigit(0, -1)">▼</button>
+                    </div>
+                    <div class="digit-group">
+                        <button class="digit-btn" onclick="changeDigit(1, 1)">▲</button>
+                        <div class="digit-display" id="digit-1">0</div>
+                        <button class="digit-btn" onclick="changeDigit(1, -1)">▼</button>
+                    </div>
+                    <div class="digit-group">
+                        <button class="digit-btn" onclick="changeDigit(2, 1)">▲</button>
+                        <div class="digit-display" id="digit-2">0</div>
+                        <button class="digit-btn" onclick="changeDigit(2, -1)">▼</button>
+                    </div>
+                    <div class="digit-group">
+                        <button class="digit-btn" onclick="changeDigit(3, 1)">▲</button>
+                        <div class="digit-display" id="digit-3">0</div>
+                        <button class="digit-btn" onclick="changeDigit(3, -1)">▼</button>
+                    </div>
+                </div>
+
+                <div class="handle-wrapper">
+                    <div class="handle" onclick="attemptOpen()">
+                        <div class="handle-center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Коректні відповіді:
+        // 1. Пушок: 3
+        // 2. Платформа: 9
+        // 3. Факультети: 4
+        // 4. Брати Рона: 5 (Білл, Чарлі, Персі, Фред, Джордж)
+        const CORRECT_CODE = [3, 9, 4, 5];
+        let currentCode = [0, 0, 0, 0];
+        let isLocked = true;
+        let errorTimeout;
+
+        function changeDigit(index, delta) {
+            if (!isLocked) return;
+
+            currentCode[index] += delta;
+
+            if (currentCode[index] > 9) currentCode[index] = 0;
+            if (currentCode[index] < 0) currentCode[index] = 9;
+
+            document.getElementById(`digit-${index}`).innerText = currentCode[index];
+        }
+
+        function attemptOpen() {
+            if (!isLocked) return;
+
+            const door = document.getElementById('door');
+            const isCorrect = currentCode.every((val, index) => val === CORRECT_CODE[index]);
+
+            if (isCorrect) {
+                // Успіх
+                isLocked = false;
+                door.classList.add('success'); // Повертає ручку
+
+                // Відкриваємо двері із затримкою після повороту ручки
+                setTimeout(() => {
+                    door.classList.add('open');
+                }, 500);
+
+            } else {
+                // Помилка
+                door.classList.remove('error');
+                // Викликаємо reflow для перезапуску CSS анімації
+                void door.offsetWidth;
+                door.classList.add('error');
+
+                clearTimeout(errorTimeout);
+                errorTimeout = setTimeout(() => {
+                    door.classList.remove('error');
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+
+</html>
