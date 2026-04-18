@@ -152,8 +152,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, #1a0f0f, #000);
-            box-shadow: inset 0 0 100px rgba(0, 0, 0, 1);
+            background: #0d0d0d;
+            border-top: 50px solid #030303;
+            border-bottom: 50px solid #1a1a1a;
+            border-left: 50px solid #080808;
+            border-right: 50px solid #080808;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 1);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -233,6 +237,8 @@
             pointer-events: none;
             transform: translateY(20px);
             z-index: 50;
+            touch-action: manipulation;
+            user-select: none;
         }
 
         .next-btn:hover {
@@ -391,6 +397,8 @@
             font-size: 14px;
             border-radius: 3px;
             box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.2), 1px 1px 3px #000;
+            touch-action: manipulation;
+            user-select: none;
         }
 
         .digit-btn:active {
@@ -440,6 +448,8 @@
             cursor: pointer;
             position: relative;
             transition: transform 0.5s;
+            touch-action: manipulation;
+            user-select: none;
         }
 
         .handle::before,
@@ -594,11 +604,8 @@
     <div id="container">
         <div id="scroll">
             <h2>Загадки Сховища</h2>
-            <ol>
-                <li>Скільки голів у собаки-охоронця Пушка?</li>
-                <li>Номер платформи (ціла частина), з якої рушає Гоґвортс-Експрес?</li>
-                <li>Скільки факультетів у школі Гоґвортс?</li>
-                <li>Скільки братів у Рона Візлі (без урахування його самого)?</li>
+            <ol id="questions-list">
+                <!-- Питання генеруються автоматично -->
             </ol>
         </div>
 
@@ -607,7 +614,7 @@
                 <div class="stone-glow">
                     <div class="stone"></div>
                 </div>
-                <button class="next-btn" onclick="alert('Перехід до наступного завдання...')">Наступне завдання</button>
+                <button class="next-btn" onclick="resetSafe()">Зіграти ще раз</button>
             </div>
 
             <div id="door">
@@ -647,15 +654,51 @@
     </div>
 
     <script>
-        // Коректні відповіді:
-        // 1. Пушок: 3
-        // 2. Платформа: 9
-        // 3. Факультети: 4
-        // 4. Брати Рона: 5 (Білл, Чарлі, Персі, Фред, Джордж)
-        const CORRECT_CODE = [3, 9, 4, 5];
+        const questionBank = [
+            { q: "Скільки голів у собаки-охоронця Пушка?", a: 3 },
+            { q: "Номер платформи (ціла частина), з якої рушає Гоґвортс-Експрес?", a: 9 },
+            { q: "Скільки факультетів у школі Гоґвортс?", a: 4 },
+            { q: "Скільки братів у Рона Візлі (без урахування його самого)?", a: 5 },
+            { q: "Скільки м'ячів використовується у грі в квідич?", a: 4 },
+            { q: "На якому курсі учні Гоґвортсу починають вивчати Догляд за магічними істотами?", a: 3 },
+            { q: "Скільки Непрощенних заклять існує?", a: 3 },
+            { q: "Скільки хрестражів створив Волдеморт (включно з Гаррі)?", a: 7 },
+            { q: "Скільки гравців у команді з квідичу?", a: 7 },
+            { q: "Скільки завдань було у Тричаклунському турнірі?", a: 3 }
+        ];
+
+        let CORRECT_CODE = [0, 0, 0, 0];
         let currentCode = [0, 0, 0, 0];
         let isLocked = true;
         let errorTimeout;
+
+        function initSafe() {
+            currentCode = [0, 0, 0, 0];
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`digit-${i}`).innerText = '0';
+            }
+
+            let shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            let selected = shuffled.slice(0, 4);
+
+            let listHtml = '';
+            selected.forEach((item, index) => {
+                listHtml += `<li>${item.q}</li>`;
+                CORRECT_CODE[index] = item.a;
+            });
+            document.getElementById('questions-list').innerHTML = listHtml;
+        }
+
+        function resetSafe() {
+            const door = document.getElementById('door');
+            door.classList.remove('open');
+
+            setTimeout(() => {
+                door.classList.remove('success');
+                initSafe();
+                isLocked = true;
+            }, 1500);
+        }
 
         function changeDigit(index, delta) {
             if (!isLocked) return;
@@ -697,6 +740,8 @@
                 }, 3000);
             }
         }
+
+        window.onload = initSafe;
     </script>
 </body>
 
