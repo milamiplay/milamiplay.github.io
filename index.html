@@ -158,10 +158,7 @@
             border-left: 50px solid #080808;
             border-right: 50px solid #080808;
             box-shadow: inset 0 0 60px rgba(0, 0, 0, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: block;
             z-index: 1;
         }
 
@@ -175,6 +172,10 @@
             align-items: center;
             animation: pulseGlow 2s infinite alternate;
             z-index: 2;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            margin-left: -75px;
         }
 
         .stone {
@@ -221,7 +222,10 @@
         }
 
         .next-btn {
-            margin-top: 40px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             padding: 15px 30px;
             background: linear-gradient(to bottom, #d4af37, #997a00);
             border: 2px solid #ffd700;
@@ -232,18 +236,22 @@
             cursor: pointer;
             border-radius: 3px;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            transition: 0.3s;
+            transition: opacity 0.5s ease 1s, transform 0.3s, box-shadow 0.3s;
             opacity: 0;
             pointer-events: none;
-            transform: translateY(20px);
             z-index: 50;
             touch-action: manipulation;
             user-select: none;
         }
 
+        .next-btn.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
         .next-btn:hover {
             box-shadow: 0 0 25px rgba(212, 175, 55, 1);
-            transform: translateY(20px) scale(1.05);
+            transform: translate(-50%, -50%) scale(1.05);
         }
 
         /* Дверцята */
@@ -269,12 +277,6 @@
         /* Відкритий стан */
         #door.open {
             transform: rotateY(-105deg);
-        }
-
-        #door.open~#interior .next-btn {
-            opacity: 1;
-            pointer-events: all;
-            transition-delay: 1s;
         }
 
         /* Помилка - трясіння і червоне блимання */
@@ -691,6 +693,8 @@
 
         function resetSafe() {
             const door = document.getElementById('door');
+            const btn = document.querySelector('.next-btn');
+            btn.classList.remove('show');
             door.classList.remove('open');
 
             setTimeout(() => {
@@ -725,6 +729,7 @@
                 // Відкриваємо двері із затримкою після повороту ручки
                 setTimeout(() => {
                     door.classList.add('open');
+                    document.querySelector('.next-btn').classList.add('show');
                 }, 500);
 
             } else {
