@@ -3,37 +3,105 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Сейф 713 - Симулятор</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сейф 713 — Магічні загадки Гоґвортсу</title>
+    <meta name="description" content="Розв'яжіть магічні загадки про світ Гаррі Поттера, щоб відкрити таємничий Сейф 713. Інтерактивна гра для справжніх фанатів магії та пригод.">
+    <meta name="keywords" content="Гаррі Поттер, Гоґвортс, Сейф 713, магія, загадки, квест, інтерактивна гра, квідич">
+    <meta name="author" content="Пан Артем">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://milamiplay.github.io/">
+    <meta property="og:title" content="Сейф 713 — Магічні загадки Гоґвортсу">
+    <meta property="og:description" content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
+    <meta property="og:image" content="https://milamiplay.github.io/og-preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://milamiplay.github.io/">
+    <meta property="twitter:title" content="Сейф 713 — Магічні загадки Гоґвортсу">
+    <meta property="twitter:description" content="Відгадай загадки та відчини магічний сейф! Пригода у світі Гаррі Поттера чекає на тебе.">
+    <meta property="twitter:image" content="https://milamiplay.github.io/og-preview.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://milamiplay.github.io/og-preview.png">
+    <link rel="apple-touch-icon" href="https://milamiplay.github.io/og-preview.png">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Сейф 713",
+      "genre": ["Puzzle", "Quest"],
+      "description": "Інтерактивний магічний квест за мотивами світу Гаррі Поттера.",
+      "author": {
+        "@type": "Person",
+        "name": "Пан Артем"
+      },
+      "url": "https://milamiplay.github.io/"
+    }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Crimson+Text:wght@400;600;700&display=swap');
+
+        :root {
+            --bg-start: #1e2a3a;
+            --bg-mid: #0d0f12;
+            --bg-end: #050507;
+            --paper: #f0e0c0;
+            --paper-text: #3e2723;
+            --paper-accent: #8b4513;
+            --gold: #d4af37;
+            --gold-soft: #f0cf50;
+            --metal-1: #555c65;
+            --metal-2: #1e2228;
+            --metal-3: #13151a;
+            --shadow-strong: rgba(0, 0, 0, 0.85);
+            --shadow-soft: rgba(0, 0, 0, 0.35);
+            --radius-lg: 1.5rem;
+            --radius-md: 1rem;
+            --radius-sm: 0.625rem;
+            --content-width: min(1200px, calc(100vw - 2rem));
+            --space-1: clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);
+            --space-2: clamp(0.75rem, 0.6rem + 0.7vw, 1rem);
+            --space-3: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+            --space-4: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+            --space-5: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+            --text-sm: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
+            --text-base: clamp(1rem, 0.95rem + 0.35vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 1rem + 0.8vw, 1.4rem);
+            --text-xl: clamp(1.45rem, 1.1rem + 1.4vw, 2rem);
+            --text-xxl: clamp(2.5rem, 1.7rem + 4vw, 4.6rem);
+            --panel-height: min(82svh, 760px);
+            --transition: 220ms ease;
+        }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        }
+
+        html {
+            color-scheme: dark;
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
         }
 
         body {
-            background: radial-gradient(ellipse at 30% 40%, #1e2a3a 0%, #0d0f12 60%, #050507 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0;
+            min-height: 100svh;
             font-family: 'Crimson Text', serif;
             color: #fff;
-            overflow: hidden;
-            touch-action: pan-x pan-y;
+            background: radial-gradient(ellipse at 30% 40%, var(--bg-start) 0%, var(--bg-mid) 60%, var(--bg-end) 100%);
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
 
-        /* Фонові частинки пилу */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background-image:
                 radial-gradient(1px 1px at 20% 30%, rgba(212, 175, 55, 0.15) 0%, transparent 100%),
                 radial-gradient(1px 1px at 80% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 100%),
@@ -42,89 +110,609 @@
             z-index: 0;
         }
 
-        #container {
-            display: flex;
-            width: 90%;
-            max-width: 1200px;
-            height: 80vh;
-            gap: 50px;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            z-index: 1;
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
         }
 
-        /* ===== СУВІЙ ===== */
-        #scroll {
-            flex: 1;
-            background-color: #f0e0c0;
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(255, 215, 0, 0.7);
+            outline-offset: 3px;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            width: var(--content-width);
+            margin: 0 auto;
+            padding: var(--space-4) 0;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+            align-items: stretch;
+            gap: clamp(1rem, 2vw, 2.5rem);
+            min-height: var(--panel-height);
+        }
+
+        .panel {
+            min-width: 0;
+        }
+
+        .scroll {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: min(70svh, 720px);
+            height: 100%;
+            color: var(--paper-text);
+            background-color: var(--paper);
             background-image:
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E"),
                 linear-gradient(180deg, rgba(139, 69, 19, 0.12) 0%, transparent 30%, transparent 70%, rgba(139, 69, 19, 0.12) 100%);
-            color: #3e2723;
-            padding: 40px 50px;
-            height: 90%;
-            border-radius: 5px 25px 5px 25px;
+            border-radius: 0.5rem 1.75rem 0.5rem 1.75rem;
+            padding: clamp(1.25rem, 1rem + 2vw, 2.6rem);
             box-shadow:
-                12px 15px 40px rgba(0, 0, 0, 0.75),
-                -3px -3px 10px rgba(0, 0, 0, 0.4),
-                inset 0 0 50px rgba(139, 69, 19, 0.35),
-                inset -8px 0 20px rgba(139, 69, 19, 0.25);
-            position: relative;
-            transform: rotate(-1.5deg);
-            overflow-y: hidden;
-            transition: box-shadow 0.3s ease;
+                12px 15px 40px rgba(0, 0, 0, 0.72),
+                -3px -3px 10px rgba(0, 0, 0, 0.25),
+                inset 0 0 50px rgba(139, 69, 19, 0.28),
+                inset -8px 0 20px rgba(139, 69, 19, 0.18);
+            transform: rotate(-1deg);
+            isolation: isolate;
         }
 
-        #scroll:hover {
-            box-shadow:
-                15px 18px 50px rgba(0, 0, 0, 0.8),
-                -3px -3px 10px rgba(0, 0, 0, 0.4),
-                inset 0 0 50px rgba(139, 69, 19, 0.4),
-                inset -8px 0 20px rgba(139, 69, 19, 0.3);
-        }
-
-        /* Текстура волокон паперу */
-        #scroll::before,
-        #scroll::after {
+        .scroll::before,
+        .scroll::after {
             content: '';
             position: absolute;
-            left: 0;
-            right: 0;
+            inset-inline: 0;
             height: 18px;
             background: linear-gradient(to bottom, #6d4c41, #3e2723);
             border-radius: 12px;
-            z-index: 10;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.15);
+            z-index: 2;
+            pointer-events: none;
         }
 
-        #scroll::before {
+        .scroll::before {
             top: -6px;
         }
 
-        #scroll::after {
+        .scroll::after {
             bottom: -6px;
         }
 
-        #questions-container {
-            height: 100%;
-            overflow-y: auto;
-            padding-right: 10px;
-            transform-origin: top left;
+        .scroll__content {
+            position: relative;
+            z-index: 1;
+            overflow: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #8b5a2b rgba(139, 69, 19, 0.12);
+            padding-right: 0.5rem;
+            min-height: 0;
+            flex: 1;
         }
 
-        #questions-container::-webkit-scrollbar {
-            width: 6px;
+        .scroll__content::-webkit-scrollbar {
+            width: 8px;
         }
 
-        #questions-container::-webkit-scrollbar-track {
-            background: rgba(139, 69, 19, 0.1);
-            border-radius: 3px;
+        .scroll__content::-webkit-scrollbar-track {
+            background: rgba(139, 69, 19, 0.12);
+            border-radius: 999px;
         }
 
-        #questions-container::-webkit-scrollbar-thumb {
+        .scroll__content::-webkit-scrollbar-thumb {
             background: linear-gradient(to bottom, #a0522d, #6d4c41);
-            border-radius: 3px;
+            border-radius: 999px;
+        }
+
+        .scroll__title {
+            margin: 0 0 0.5rem;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: var(--text-xl);
+            line-height: 1.15;
+            letter-spacing: 0.06em;
+            color: #4e2b1a;
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+            padding-bottom: 0.85rem;
+            border-bottom: 2px solid #a0522d;
+        }
+
+        .scroll__intro {
+            margin: 0 0 1rem;
+            text-align: center;
+            font-size: var(--text-base);
+            line-height: 1.5;
+            color: rgba(62, 39, 35, 0.9);
+        }
+
+        .question-list {
+            margin: 0;
+            padding-left: 1.4rem;
+            font-size: var(--text-base);
+            line-height: 1.65;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .question-list li {
+            margin-bottom: 0.9rem;
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.38);
+        }
+
+        .question-list li::marker {
+            color: var(--paper-accent);
+            font-family: 'Cinzel', serif;
+        }
+
+        .scroll__note {
+            margin-top: 1rem;
+            font-size: var(--text-sm);
+            line-height: 1.45;
+            color: rgba(62, 39, 35, 0.84);
+        }
+
+        .safe-shell {
+            position: relative;
+            min-height: min(70svh, 720px);
+            height: 100%;
+            padding: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+            background: linear-gradient(145deg, #2e3238, var(--metal-3));
+            border: clamp(10px, 1.4vw, 20px) solid #111315;
+            border-radius: 1rem;
+            box-shadow:
+                25px 25px 60px rgba(0, 0, 0, 0.95),
+                -5px -5px 20px rgba(80, 80, 80, 0.05),
+                inset 0 0 30px rgba(0, 0, 0, 1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            perspective: 1800px;
+            overflow: clip;
+        }
+
+        .safe-shell::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 12px 12px, #666 3px, #222 4.5px, transparent 6px),
+                radial-gradient(circle at calc(100% - 12px) 12px, #666 3px, #222 4.5px, transparent 6px),
+                radial-gradient(circle at 12px calc(100% - 12px), #666 3px, #222 4.5px, transparent 6px),
+                radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), #666 3px, #222 4.5px, transparent 6px);
+            z-index: 5;
+        }
+
+        .safe-interior,
+        .door {
+            position: absolute;
+            inset: 0;
+        }
+
+        .safe-interior {
+            background:
+                radial-gradient(ellipse at 50% 80%, #1a0505 0%, #0a0a0a 60%),
+                linear-gradient(to bottom, #050505, #111);
+            border-top: clamp(22px, 4vw, 48px) solid #020202;
+            border-bottom: clamp(22px, 4vw, 48px) solid #181818;
+            border-left: clamp(22px, 4vw, 48px) solid #060606;
+            border-right: clamp(22px, 4vw, 48px) solid #060606;
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9), inset 0 -20px 40px rgba(180, 0, 0, 0.08);
+            z-index: 1;
+        }
+
+        .stone-cluster {
+            position: absolute;
+            left: 50%;
+            bottom: clamp(2rem, 4vw, 3rem);
+            transform: translateX(-50%);
+            display: grid;
+            place-items: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .stone-glow {
+            grid-area: 1 / 1;
+            width: clamp(8rem, 20vw, 11rem);
+            aspect-ratio: 1;
+            background: radial-gradient(circle, rgba(255, 30, 30, 0.6) 0%, rgba(180, 0, 0, 0.2) 40%, transparent 70%);
+            animation: pulseGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        .stone-glow::after {
+            content: '';
+            position: absolute;
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(10rem, 24vw, 14rem);
+            aspect-ratio: 1;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.12) 0%, transparent 70%);
+            animation: pulseGlowOuter 2.5s ease-in-out infinite alternate-reverse;
+        }
+
+        .stone {
+            grid-area: 1 / 1;
+            width: clamp(4rem, 10vw, 5.75rem);
+            aspect-ratio: 0.82;
+            background: linear-gradient(135deg, #ff2020 0%, #c00000 35%, #700000 75%, #400000 100%);
+            clip-path: polygon(45% 5%, 65% 0%, 90% 20%, 100% 45%, 85% 85%, 55% 100%, 20% 90%, 0% 60%, 10% 25%);
+            box-shadow:
+                inset -12px -12px 25px rgba(0, 0, 0, 0.85),
+                inset 12px 12px 28px rgba(255, 160, 160, 0.8),
+                0 0 25px rgba(255, 0, 0, 0.6),
+                0 0 60px rgba(200, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: stonePulse 3s ease-in-out infinite alternate, stoneFloat 4s ease-in-out infinite;
+        }
+
+        .stone::before,
+        .stone::after {
+            content: '';
+            position: absolute;
+        }
+
+        .stone::before {
+            top: 5%;
+            left: 8%;
+            right: 15%;
+            bottom: 10%;
+            background: linear-gradient(60deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.1) 45%, transparent 70%);
+            clip-path: polygon(50% 0%, 100% 30%, 80% 100%, 20% 100%, 0% 30%);
+        }
+
+        .stone::after {
+            top: 8%;
+            left: 5%;
+            right: 30%;
+            bottom: 35%;
+            background: linear-gradient(110deg, rgba(255, 255, 255, 0.95) 0%, transparent 50%);
+            clip-path: polygon(0% 0%, 100% 10%, 90% 100%, 10% 90%);
+            border-radius: 50%;
+        }
+
+        .stone-shadow {
+            grid-area: 1 / 1;
+            width: clamp(3.5rem, 8vw, 4.5rem);
+            height: 0.9rem;
+            align-self: end;
+            margin-top: 5rem;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 0 0 5px rgba(180, 0, 0, 0.3);
+            animation: shadowPulse 4s ease-in-out infinite;
+        }
+
+        .next-btn {
+            position: absolute;
+            left: 50%;
+            top: 38%;
+            transform: translate(-50%, -50%) scale(0.94);
+            border: 2px solid rgba(255, 215, 0, 0.7);
+            border-radius: 0.5rem;
+            padding: 0.95rem 1.5rem;
+            min-width: min(18rem, calc(100% - 2rem));
+            background: linear-gradient(145deg, #e0bf40, #a08800, #c9ad35);
+            color: #111;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.95rem, 0.9rem + 0.35vw, 1.05rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 5px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .next-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .next-btn:hover {
+            background: linear-gradient(145deg, var(--gold-soft), #b09800, #d9bd45);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.85), 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .door {
+            z-index: 10;
+            background: linear-gradient(150deg, var(--metal-1) 0%, #33393f 30%, var(--metal-2) 70%, #14181c 100%);
+            border: clamp(10px, 1.2vw, 15px) solid;
+            border-color: #8a9099 #1a1c20 #1a1c20 #8a9099;
+            transform-origin: left center;
+            transition: transform 1.7s cubic-bezier(0.3, 0, 0.1, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: clamp(1rem, 1.2vw, 1.5rem);
+            padding: clamp(1rem, 3vw, 2rem) var(--space-3);
+            transform-style: preserve-3d;
+        }
+
+        .door::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            right: 15px;
+            top: 44%;
+            height: 4px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.07), transparent);
+            pointer-events: none;
+        }
+
+        .door.open {
+            transform: rotateY(-108deg);
+        }
+
+        .door-highlight {
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 10px;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.04), transparent);
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .safe-title {
+            margin: 0;
+            padding-top: 0.3rem;
+            font-family: 'Cinzel', serif;
+            font-size: var(--text-xxl);
+            line-height: 1;
+            letter-spacing: 0.08em;
+            background: linear-gradient(180deg, #ffe066 0%, #ffd700 30%, #c8a200 60%, #7a6000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8));
+            animation: vaultNumGlow 4s ease-in-out infinite alternate;
+        }
+
+        .safe-status {
+            margin: -0.25rem 0 0;
+            font-size: var(--text-sm);
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.85);
+            text-align: center;
+            max-width: 30ch;
+        }
+
+        .error-text {
+            position: absolute;
+            top: clamp(5.25rem, 14vw, 7rem);
+            inset-inline: 0;
+            text-align: center;
+            color: #ff2222;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000, 0 0 50px darkred;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+            z-index: 30;
+        }
+
+        .door.error {
+            animation: shake 0.45s ease-in-out;
+        }
+
+        .door.error::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 0, 0, 0.15);
+            pointer-events: none;
+            z-index: 20;
+            animation: errorFlash 0.45s ease-in-out;
+        }
+
+        .door.error .error-text {
+            opacity: 1;
+            animation: blink 0.18s infinite alternate;
+        }
+
+        .lock-panel {
+            background: linear-gradient(160deg, #181a1e, #0e0f12);
+            padding: clamp(0.8rem, 1vw + 0.6rem, 1.4rem);
+            border-radius: 0.9rem;
+            border: 3px solid #2a2d33;
+            border-top-color: #111;
+            border-left-color: #111;
+            box-shadow: inset 0 0 20px #000, 0 12px 30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.03);
+            display: grid;
+            gap: var(--space-2);
+            width: min(100%, 26rem);
+        }
+
+        .lock-panel__legend {
+            margin: 0;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: var(--text-sm);
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .digits {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: clamp(0.45rem, 1vw, 0.85rem);
+        }
+
+        .digit-group {
+            display: grid;
+            justify-items: center;
+            gap: 0.3rem;
+        }
+
+        .digit-btn {
+            width: min(100%, 3rem);
+            min-width: 2.5rem;
+            min-height: 2rem;
+            border-radius: 0.45rem;
+            border: 1px solid #111;
+            border-bottom-width: 2px;
+            background: linear-gradient(to bottom, #5a5a5a, #333);
+            color: #ddd;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.18), 0 2px 4px #000;
+            transition: transform 0.1s ease, background 0.1s ease, box-shadow 0.1s ease;
+            padding: 0.15rem;
+        }
+
+        .digit-btn:hover {
+            background: linear-gradient(to bottom, #6a6a6a, #444);
+        }
+
+        .digit-btn:active {
+            background: linear-gradient(to bottom, #222, #1a1a1a);
+            box-shadow: inset 2px 2px 6px #000;
+            transform: translateY(1px);
+        }
+
+        .digit-display {
+            width: min(100%, 3.75rem);
+            min-width: 3rem;
+            min-height: 4.5rem;
+            display: grid;
+            place-items: center;
+            padding: 0.3rem;
+            background: linear-gradient(to bottom, #080808, #0e0e0e);
+            border: 2px solid #000;
+            border-radius: 0.4rem;
+            box-shadow: inset 0 6px 14px #000, inset 0 -2px 4px rgba(224, 208, 176, 0.05), 0 2px 0 rgba(255, 255, 255, 0.06);
+            color: #e8d8a8;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 2vw + 0.9rem, 2.35rem);
+            line-height: 1;
+            text-shadow: 0 0 8px rgba(232, 216, 168, 0.7), 0 0 20px rgba(200, 180, 100, 0.3);
+        }
+
+        .digit-display.changed {
+            animation: digitChange 0.25s ease-out;
+        }
+
+        .handle-wrapper {
+            position: relative;
+            width: clamp(6rem, 24vw, 9rem);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #3a3e45, #1a1d22);
+            box-shadow: inset 6px 6px 14px rgba(0, 0, 0, 0.85), inset -2px -2px 6px rgba(255, 255, 255, 0.08), 0 12px 25px rgba(0, 0, 0, 0.9), 0 0 0 3px #0d0f12;
+            display: grid;
+            place-items: center;
+            margin-top: auto;
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
+        }
+
+        .handle {
+            position: relative;
+            width: 72%;
+            height: 72%;
+            border-radius: 50%;
+            border: 5px solid #1a1a1a;
+            background: conic-gradient(from 0deg, #4a4a4a 0%, #888 15%, #3e3e3e 30%, #777 50%, #333 65%, #888 80%, #4a4a4a 100%);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s cubic-bezier(0.3, 0, 0.2, 1), filter 0.2s ease;
+        }
+
+        .handle::before,
+        .handle::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(to bottom, #777, #3a3a3a);
+            border: 2px solid #1a1a1a;
+            border-radius: 4px;
+            box-shadow: 0 3px 6px #000;
+        }
+
+        .handle::before {
+            top: -20%;
+            bottom: -20%;
+            left: 36%;
+            right: 36%;
+        }
+
+        .handle::after {
+            left: -20%;
+            right: -20%;
+            top: 36%;
+            bottom: 36%;
+        }
+
+        .handle-center {
+            position: absolute;
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            width: 26%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #333, #000);
+            box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.15), 0 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+
+        .handle-button {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            color: inherit;
+        }
+
+        .handle-button:hover .handle {
+            filter: brightness(1.25) contrast(1.05);
+        }
+
+        .handle-button:active .handle {
+            filter: brightness(0.9);
+        }
+
+        .door.success .handle {
+            transform: rotate(90deg);
+            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffd700;
+            pointer-events: none;
+            z-index: 100;
+            animation: sparkFly var(--dur, 0.8s) ease-out forwards;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         @keyframes tearOff {
@@ -167,135 +755,16 @@
             }
         }
 
-        .tearing {
-            animation: tearOff 0.7s forwards cubic-bezier(0.4, 0, 0.8, 1);
-        }
+        @keyframes pulseGlow {
+            from {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
 
-        .dropping {
-            animation: dropIn 0.7s forwards cubic-bezier(0.2, 0.8, 0.3, 1);
-        }
-
-        #scroll h2 {
-            font-family: 'Cinzel Decorative', serif;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 22px;
-            border-bottom: 2px solid #a0522d;
-            padding-bottom: 12px;
-            letter-spacing: 2px;
-            color: #4e2b1a;
-            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
-        }
-
-        #scroll ol {
-            padding-left: 20px;
-            font-size: 16px;
-            line-height: 1.6;
-            font-weight: bold;
-        }
-
-        #scroll li {
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.45);
-            position: relative;
-            transition: color 0.2s;
-        }
-
-        #scroll li::marker {
-            color: #8b4513;
-        }
-
-        /* ===== СЕЙФ ===== */
-        #safe-wrapper {
-            flex: 1.2;
-            height: 90%;
-            position: relative;
-            perspective: 1800px;
-            background: linear-gradient(145deg, #2e3238, #13151a);
-            border: 20px solid #111315;
-            border-radius: 12px;
-            box-shadow:
-                25px 25px 60px rgba(0, 0, 0, 0.95),
-                -5px -5px 20px rgba(80, 80, 80, 0.05),
-                inset 0 0 30px rgba(0, 0, 0, 1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Болти на кутах */
-        #safe-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            pointer-events: none;
-            background-image:
-                radial-gradient(circle at 12px 12px, #666 3px, #222 4.5px, transparent 6px),
-                radial-gradient(circle at calc(100% - 12px) 12px, #666 3px, #222 4.5px, transparent 6px),
-                radial-gradient(circle at 12px calc(100% - 12px), #666 3px, #222 4.5px, transparent 6px),
-                radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), #666 3px, #222 4.5px, transparent 6px);
-            z-index: 5;
-        }
-
-        /* ===== ІНТЕР'ЄР СЕЙФУ ===== */
-        #interior {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(ellipse at 50% 80%, #1a0505 0%, #0a0a0a 60%),
-                linear-gradient(to bottom, #050505, #111);
-            border-top: 48px solid #020202;
-            border-bottom: 48px solid #181818;
-            border-left: 48px solid #060606;
-            border-right: 48px solid #060606;
-            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9), inset 0 -20px 40px rgba(180, 0, 0, 0.08);
-            display: block;
-            z-index: 1;
-        }
-
-        /* ===== КАМІНЬ ===== */
-        .stone-container {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 2;
-        }
-
-        .stone-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(255, 30, 30, 0.6) 0%, rgba(180, 0, 0, 0.2) 40%, transparent 70%);
-            animation: pulseGlow 2.5s ease-in-out infinite alternate;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Зовнішнє кільце світіння */
-        .stone-glow::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.12) 0%, transparent 70%);
-            animation: pulseGlowOuter 2.5s ease-in-out infinite alternate-reverse;
+            to {
+                transform: scale(1.15);
+                opacity: 1;
+            }
         }
 
         @keyframes pulseGlowOuter {
@@ -308,21 +777,6 @@
                 transform: translate(-50%, -50%) scale(1.2);
                 opacity: 1;
             }
-        }
-
-        .stone {
-            width: 90px;
-            height: 110px;
-            background: linear-gradient(135deg, #ff2020 0%, #c00000 35%, #700000 75%, #400000 100%);
-            clip-path: polygon(45% 5%, 65% 0%, 90% 20%, 100% 45%, 85% 85%, 55% 100%, 20% 90%, 0% 60%, 10% 25%);
-            box-shadow:
-                inset -12px -12px 25px rgba(0, 0, 0, 0.85),
-                inset 12px 12px 28px rgba(255, 160, 160, 0.8),
-                0 0 25px rgba(255, 0, 0, 0.6),
-                0 0 60px rgba(200, 0, 0, 0.3);
-            position: relative;
-            z-index: 3;
-            animation: stonePulse 3s ease-in-out infinite alternate, stoneFloat 4s ease-in-out infinite;
         }
 
         @keyframes stonePulse {
@@ -349,40 +803,6 @@
             }
         }
 
-        .stone::before {
-            content: '';
-            position: absolute;
-            top: 5%;
-            left: 8%;
-            right: 15%;
-            bottom: 10%;
-            background: linear-gradient(60deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.1) 45%, transparent 70%);
-            clip-path: polygon(50% 0%, 100% 30%, 80% 100%, 20% 100%, 0% 30%);
-        }
-
-        .stone::after {
-            content: '';
-            position: absolute;
-            top: 8%;
-            left: 5%;
-            right: 30%;
-            bottom: 35%;
-            background: linear-gradient(110deg, rgba(255, 255, 255, 0.95) 0%, transparent 50%);
-            clip-path: polygon(0% 0%, 100% 10%, 90% 100%, 10% 90%);
-            border-radius: 50%;
-        }
-
-        .stone-shadow {
-            width: 70px;
-            height: 14px;
-            background: rgba(0, 0, 0, 0.9);
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 0 0 5px rgba(180, 0, 0, 0.3);
-            margin-top: -6px;
-            z-index: 2;
-            animation: shadowPulse 4s ease-in-out infinite;
-        }
-
         @keyframes shadowPulse {
 
             0%,
@@ -397,30 +817,6 @@
             }
         }
 
-        @keyframes pulseGlow {
-            from {
-                transform: translate(-50%, -50%) scale(0.95);
-                opacity: 0.7;
-            }
-
-            to {
-                transform: translate(-50%, -50%) scale(1.15);
-                opacity: 1;
-            }
-        }
-
-        /* Частинки іскор при відкритті */
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: #ffd700;
-            pointer-events: none;
-            z-index: 100;
-            animation: sparkFly var(--dur, 0.8s) ease-out forwards;
-        }
-
         @keyframes sparkFly {
             0% {
                 transform: translate(0, 0) scale(1);
@@ -431,106 +827,6 @@
                 transform: translate(var(--tx, 30px), var(--ty, -60px)) scale(0);
                 opacity: 0;
             }
-        }
-
-        /* ===== КНОПКА ===== */
-        .next-btn {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            padding: 16px 32px;
-            background: linear-gradient(145deg, #e0bf40, #a08800, #c9ad35);
-            border: 2px solid rgba(255, 215, 0, 0.7);
-            color: #111;
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            box-shadow:
-                0 0 20px rgba(212, 175, 55, 0.5),
-                0 5px 15px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            transition: opacity 0.6s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.3s;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 50;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-            letter-spacing: 1px;
-        }
-
-        .next-btn.show {
-            opacity: 1;
-            pointer-events: all;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .next-btn:hover {
-            box-shadow: 0 0 35px rgba(212, 175, 55, 0.9), 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%) scale(1.07);
-            background: linear-gradient(145deg, #f0cf50, #b09800, #d9bd45);
-        }
-
-        .next-btn:active {
-            transform: translate(-50%, -50%) scale(0.97);
-        }
-
-        /* ===== ДВЕРЦЯТА ===== */
-        #door {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(150deg, #555c65 0%, #33393f 30%, #1e2228 70%, #14181c 100%);
-            border: 15px solid;
-            border-color: #8a9099 #1a1c20 #1a1c20 #8a9099;
-            transform-origin: left center;
-            transition: transform 1.8s cubic-bezier(0.3, 0, 0.1, 1);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 40px;
-            transform-style: preserve-3d;
-        }
-
-        /* Горизонтальна смуга рельєфу на дверцятах */
-        #door::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            right: 15px;
-            top: 45%;
-            bottom: 0;
-            height: 4px;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.07), transparent);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        #door.open {
-            transform: rotateY(-108deg);
-        }
-
-        #door.error {
-            animation: shake 0.45s ease-in-out;
-        }
-
-        #door.error::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 0, 0, 0.15);
-            pointer-events: none;
-            z-index: 20;
-            animation: errorFlash 0.45s ease-in-out;
         }
 
         @keyframes errorFlash {
@@ -544,26 +840,6 @@
             75% {
                 opacity: 1;
             }
-        }
-
-        .error-text {
-            position: absolute;
-            top: 110px;
-            color: #ff2222;
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 55px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000, 0 0 50px darkred;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s;
-            z-index: 30;
-            letter-spacing: 5px;
-        }
-
-        #door.error .error-text {
-            opacity: 1;
-            animation: blink 0.18s infinite alternate;
         }
 
         @keyframes blink {
@@ -602,20 +878,6 @@
             }
         }
 
-        .vault-number {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 70px;
-            font-weight: bold;
-            margin-bottom: 50px;
-            letter-spacing: 5px;
-            background: linear-gradient(180deg, #ffe066 0%, #ffd700 30%, #c8a200 60%, #7a6000 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8));
-            animation: vaultNumGlow 4s ease-in-out infinite alternate;
-        }
-
         @keyframes vaultNumGlow {
             from {
                 filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
@@ -624,83 +886,6 @@
             to {
                 filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
             }
-        }
-
-        /* ===== ЗАМОК ===== */
-        .lock-container {
-            background: linear-gradient(160deg, #181a1e, #0e0f12);
-            padding: 22px;
-            border-radius: 12px;
-            border: 3px solid #2a2d33;
-            border-top-color: #111;
-            border-left-color: #111;
-            box-shadow:
-                inset 0 0 20px #000,
-                0 12px 30px rgba(0, 0, 0, 0.9),
-                0 0 0 1px rgba(255, 255, 255, 0.03);
-            display: flex;
-            gap: 15px;
-            margin-bottom: 50px;
-        }
-
-        .digit-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .digit-btn {
-            background: linear-gradient(to bottom, #5a5a5a, #333);
-            border: 1px solid #111;
-            border-bottom: 2px solid #111;
-            color: #bbb;
-            width: 44px;
-            height: 26px;
-            cursor: pointer;
-            font-size: 13px;
-            border-radius: 4px;
-            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.18), 0 2px 4px #000;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-            transition: background 0.1s, transform 0.1s, box-shadow 0.1s;
-        }
-
-        .digit-btn:hover {
-            background: linear-gradient(to bottom, #6a6a6a, #444);
-            color: #ddd;
-        }
-
-        .digit-btn:active {
-            background: linear-gradient(to bottom, #222, #1a1a1a);
-            box-shadow: inset 2px 2px 6px #000;
-            transform: translateY(1px);
-        }
-
-        .digit-display {
-            width: 52px;
-            height: 72px;
-            background: linear-gradient(to bottom, #080808, #0e0e0e);
-            border: 2px solid #000;
-            border-radius: 3px;
-            box-shadow:
-                inset 0 6px 14px #000,
-                inset 0 -2px 4px rgba(224, 208, 176, 0.05),
-                0 2px 0 rgba(255, 255, 255, 0.06);
-            color: #e8d8a8;
-            font-family: 'Cinzel Decorative', monospace;
-            font-size: 38px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-shadow: 0 0 8px rgba(232, 216, 168, 0.7), 0 0 20px rgba(200, 180, 100, 0.3);
-            transition: color 0.1s, text-shadow 0.2s;
-        }
-
-        /* Підсвічування при зміні цифри */
-        .digit-display.changed {
-            animation: digitChange 0.25s ease-out;
         }
 
         @keyframes digitChange {
@@ -720,261 +905,145 @@
             }
         }
 
-        /* ===== РУКОЯТКА ===== */
-        .handle-wrapper {
-            position: relative;
-            width: 145px;
-            height: 145px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #3a3e45, #1a1d22);
-            box-shadow:
-                inset 6px 6px 14px rgba(0, 0, 0, 0.85),
-                inset -2px -2px 6px rgba(255, 255, 255, 0.08),
-                0 12px 25px rgba(0, 0, 0, 0.9),
-                0 0 0 3px #0d0f12;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .tearing {
+            animation: tearOff 0.7s forwards cubic-bezier(0.4, 0, 0.8, 1);
         }
 
-        .handle {
-            width: 105px;
-            height: 105px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #4a4a4a 0%, #888 15%, #3e3e3e 30%, #777 50%, #333 65%, #888 80%, #4a4a4a 100%);
-            border: 5px solid #1a1a1a;
-            box-shadow:
-                0 6px 18px rgba(0, 0, 0, 0.9),
-                inset 0 2px 4px rgba(255, 255, 255, 0.1),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.6s cubic-bezier(0.3, 0, 0.2, 1), filter 0.2s;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
+        .dropping {
+            animation: dropIn 0.7s forwards cubic-bezier(0.2, 0.8, 0.3, 1);
         }
 
-        .handle::before,
-        .handle::after {
-            content: '';
-            position: absolute;
-            background: linear-gradient(to bottom, #777, #3a3a3a);
-            border: 2px solid #1a1a1a;
-            border-radius: 4px;
-            box-shadow: 0 3px 6px #000;
-        }
-
-        .handle::before {
-            top: -22px;
-            bottom: -22px;
-            left: 37px;
-            right: 37px;
-        }
-
-        .handle::after {
-            left: -22px;
-            right: -22px;
-            top: 37px;
-            bottom: 37px;
-        }
-
-        .handle-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 28px;
-            height: 28px;
-            background: radial-gradient(circle at 35% 35%, #333, #000);
-            border-radius: 50%;
-            z-index: 2;
-            box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.15), 0 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .handle:hover {
-            filter: brightness(1.3) contrast(1.05);
-        }
-
-        .handle:active {
-            filter: brightness(0.9);
-        }
-
-        #door.success .handle {
-            transform: rotate(90deg);
-            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.4, 1.2);
-        }
-
-        /* Лінії рефлексу на дверцятах */
-        .door-highlight {
-            position: absolute;
-            top: 10px;
-            bottom: 10px;
-            left: 10px;
-            width: 3px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.04), transparent);
-            pointer-events: none;
-            border-radius: 2px;
-        }
-
-        /* ===== МЕДІА ===== */
-        @media (max-width: 900px) {
-            #container {
-                flex-direction: column;
-                height: auto;
-                padding: 20px 0;
+        @media (max-width: 960px) {
+            .layout {
+                grid-template-columns: 1fr;
+                min-height: auto;
             }
 
-            #scroll,
-            #safe-wrapper {
-                width: 100%;
-                min-height: 500px;
+            .scroll,
+            .safe-shell {
+                min-height: clamp(28rem, 78svh, 40rem);
+            }
+
+            .scroll {
+                transform: none;
             }
         }
 
-        @media (max-width: 600px) {
-            #scroll {
-                padding: 20px;
+        @media (max-width: 640px) {
+            .page {
+                padding-block: var(--space-3);
             }
 
-            #scroll h2 {
-                font-size: 20px;
-                margin-bottom: 12px;
+            .scroll {
+                border-radius: 0.65rem 1.2rem 0.65rem 1.2rem;
             }
 
-            #scroll ol {
-                font-size: 14px;
-                line-height: 1.45;
+            .safe-shell {
+                min-height: 32rem;
             }
 
-            #scroll li {
-                margin-bottom: 10px;
+            .door {
+                padding-inline: 0.85rem;
             }
 
-            #safe-wrapper {
-                min-height: 400px;
+            .digits {
+                gap: 0.4rem;
             }
 
-            .vault-number {
-                font-size: 50px;
-                margin-bottom: 25px;
+            .safe-status {
+                max-width: 26ch;
             }
 
             .error-text {
-                font-size: 38px;
-                top: 80px;
+                top: 5rem;
             }
+        }
 
-            .lock-container {
-                gap: 8px;
-                padding: 14px;
-                margin-bottom: 30px;
-            }
+        @media (prefers-reduced-motion: reduce) {
 
-            .digit-display {
-                width: 40px;
-                height: 55px;
-                font-size: 30px;
-            }
-
-            .digit-btn {
-                width: 34px;
-            }
-
-            .handle-wrapper {
-                width: 100px;
-                height: 100px;
-            }
-
-            .handle {
-                width: 70px;
-                height: 70px;
-            }
-
-            .handle::before {
-                top: -16px;
-                bottom: -16px;
-                left: 24px;
-                right: 24px;
-            }
-
-            .handle::after {
-                left: -16px;
-                right: -16px;
-                top: 24px;
-                bottom: 24px;
-            }
-
-            .handle-center {
-                width: 18px;
-                height: 18px;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-            #door {
-                padding-top: 22px;
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
 
 <body>
-    <div id="container">
-        <div id="scroll">
-            <div id="questions-container">
-                <h2>Загадки Сховища</h2>
-                <ol id="questions-list"></ol>
-            </div>
+    <main class="page">
+        <div class="layout">
+            <section class="panel scroll" aria-labelledby="riddles-title">
+                <div class="scroll__content" id="questions-container">
+                    <h1 class="scroll__title" id="riddles-title">Загадки сховища</h1>
+                    <p class="scroll__intro">Розв’яжи 4 загадки. Кожна правильна відповідь дає одну цифру для замка.</p>
+                    <ol class="question-list" id="questions-list"></ol>
+
+                </div>
+            </section>
+
+            <section class="panel safe-shell" id="safe-wrapper" aria-label="Сейф із кодовим замком">
+                <div class="safe-interior" aria-hidden="true">
+                    <div class="stone-cluster">
+                        <div class="stone-glow"></div>
+                        <div class="stone"></div>
+                        <div class="stone-shadow"></div>
+                    </div>
+                    <button class="next-btn" id="restart-btn" type="button">Зіграти ще раз</button>
+                </div>
+
+                <div class="door" id="door" aria-live="polite">
+                    <div class="door-highlight" aria-hidden="true"></div>
+                    <h2 class="safe-title">713</h2>
+                    <div class="error-text" aria-hidden="true">ERROR</div>
+
+                    <div class="lock-panel" aria-label="Кодовий замок">
+                        <div class="digits" role="group" aria-label="Чотири цифри коду">
+                            <div class="digit-group" data-index="0">
+                                <button class="digit-btn" type="button" data-action="up"
+                                    aria-label="Збільшити першу цифру">▲</button>
+                                <div class="digit-display" id="digit-0" aria-live="polite">0</div>
+                                <button class="digit-btn" type="button" data-action="down"
+                                    aria-label="Зменшити першу цифру">▼</button>
+                            </div>
+                            <div class="digit-group" data-index="1">
+                                <button class="digit-btn" type="button" data-action="up"
+                                    aria-label="Збільшити другу цифру">▲</button>
+                                <div class="digit-display" id="digit-1" aria-live="polite">0</div>
+                                <button class="digit-btn" type="button" data-action="down"
+                                    aria-label="Зменшити другу цифру">▼</button>
+                            </div>
+                            <div class="digit-group" data-index="2">
+                                <button class="digit-btn" type="button" data-action="up"
+                                    aria-label="Збільшити третю цифру">▲</button>
+                                <div class="digit-display" id="digit-2" aria-live="polite">0</div>
+                                <button class="digit-btn" type="button" data-action="down"
+                                    aria-label="Зменшити третю цифру">▼</button>
+                            </div>
+                            <div class="digit-group" data-index="3">
+                                <button class="digit-btn" type="button" data-action="up"
+                                    aria-label="Збільшити четверту цифру">▲</button>
+                                <div class="digit-display" id="digit-3" aria-live="polite">0</div>
+                                <button class="digit-btn" type="button" data-action="down"
+                                    aria-label="Зменшити четверту цифру">▼</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="handle-wrapper">
+                        <button class="handle-button" id="open-btn" type="button" aria-label="Спробувати відкрити сейф">
+                            <div class="handle">
+                                <div class="handle-center"></div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
-
-        <div id="safe-wrapper">
-            <div id="interior">
-                <div class="stone-container">
-                    <div class="stone-glow"></div>
-                    <div class="stone"></div>
-                    <div class="stone-shadow"></div>
-                </div>
-                <button class="next-btn" onclick="resetSafe()">Зіграти ще раз</button>
-            </div>
-
-            <div id="door">
-                <div class="door-highlight"></div>
-                <div class="vault-number">713</div>
-                <div class="error-text">ERROR</div>
-
-                <div class="lock-container">
-                    <div class="digit-group">
-                        <button class="digit-btn" onclick="changeDigit(0, 1)">▲</button>
-                        <div class="digit-display" id="digit-0">0</div>
-                        <button class="digit-btn" onclick="changeDigit(0, -1)">▼</button>
-                    </div>
-                    <div class="digit-group">
-                        <button class="digit-btn" onclick="changeDigit(1, 1)">▲</button>
-                        <div class="digit-display" id="digit-1">0</div>
-                        <button class="digit-btn" onclick="changeDigit(1, -1)">▼</button>
-                    </div>
-                    <div class="digit-group">
-                        <button class="digit-btn" onclick="changeDigit(2, 1)">▲</button>
-                        <div class="digit-display" id="digit-2">0</div>
-                        <button class="digit-btn" onclick="changeDigit(2, -1)">▼</button>
-                    </div>
-                    <div class="digit-group">
-                        <button class="digit-btn" onclick="changeDigit(3, 1)">▲</button>
-                        <div class="digit-display" id="digit-3">0</div>
-                        <button class="digit-btn" onclick="changeDigit(3, -1)">▼</button>
-                    </div>
-                </div>
-
-                <div class="handle-wrapper">
-                    <div class="handle" onclick="attemptOpen()">
-                        <div class="handle-center"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <script>
         const questionBank = [
@@ -991,15 +1060,13 @@
             { q: "Скільки дітей у родині Візлі?", a: 7 },
             { q: "Скільки творців Карти Мародерів?", a: 4 },
             { q: "На якому поверсі знаходиться Кімната на вимогу?", a: 7 },
-            { q: "Скільки загоничів у команді з квідичу?", a: 3 },
+            { q: "Скільки загоничів у команді з квідичу?", a: 2 },
             { q: "Скільки засновників має Гоґвортс?", a: 4 },
             { q: "Скільки років триває навчання в Гоґвортсі?", a: 7 },
             { q: "На якому поверсі знаходився заборонений коридор?", a: 3 },
             { q: "Скільки крил у золотого снітча?", a: 2 },
             { q: "Скільки очей у павука Арагога?", a: 8 },
             { q: "Скільки відбивачів у команді з квідичу?", a: 2 },
-            { q: "Скільки балів дає золотий снич?", a: 150 },
-            { q: "Скільки балів дає квафл?", a: 10 },
             { q: "Скільки бладжерів у грі в квідич?", a: 2 },
             { q: "Скільки квафлів у грі в квідич?", a: 1 },
             { q: "Скільки сничів у грі в квідич?", a: 1 },
@@ -1012,149 +1079,214 @@
             { q: "Скільки факультативних предметів можна обрати з 3-го курсу?", a: 5 },
             { q: "Скільки обов'язкових предметів вивчають на 1-му та 2-му курсах?", a: 7 },
             { q: "Скільки разів Гаррі Поттер користувався хроноворотом?", a: 1 },
-            { q: "Скільки разів Гаррі Поттер зустрічався з Волдемортом лицем до лиця?", a: 7 },
             { q: "Скільки разів Гаррі Поттер виживав після Авада Кедавра?", a: 2 },
             { q: "Скільки разів Дамблдор переміг Ґріндельвальда?", a: 1 },
             { q: "Скільки драконів брало участь у першому завданні Тричаклунського турніру?", a: 4 },
             { q: "Скільки чемпіонів брало участь у Тричаклунському турнірі?", a: 4 }
         ];
 
-        let unusedQuestions = [];
-        let CORRECT_CODE = [0, 0, 0, 0];
-        let currentCode = [0, 0, 0, 0];
-        let isLocked = true;
-        let errorTimeout;
+        const STATE = {
+            correctCode: [0, 0, 0, 0],
+            currentCode: [0, 0, 0, 0],
+            unusedQuestions: [],
+            isLocked: true,
+            errorTimeout: null,
+            openingTimeouts: []
+        };
+
+        const elements = {
+            questionsContainer: document.getElementById('questions-container'),
+            questionsList: document.getElementById('questions-list'),
+            door: document.getElementById('door'),
+            statusText: document.getElementById('status-text'),
+            safeWrapper: document.getElementById('safe-wrapper'),
+            openButton: document.getElementById('open-btn'),
+            restartButton: document.getElementById('restart-btn'),
+            digitDisplays: Array.from(document.querySelectorAll('.digit-display')),
+            digitButtons: Array.from(document.querySelectorAll('.digit-btn'))
+        };
+
+        function shuffle(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i -= 1) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function updateStatus(message) {
+            elements.statusText.textContent = message;
+        }
+
+        function renderDigits() {
+            elements.digitDisplays.forEach((display, index) => {
+                display.textContent = STATE.currentCode[index];
+            });
+        }
+
+        function animateDigit(index) {
+            const display = elements.digitDisplays[index];
+            display.classList.remove('changed');
+            void display.offsetWidth;
+            display.classList.add('changed');
+        }
+
+        function setInteractiveState(enabled) {
+            elements.openButton.disabled = !enabled;
+            elements.digitButtons.forEach((button) => {
+                button.disabled = !enabled;
+            });
+        }
+
+        function refillQuestionPoolIfNeeded() {
+            if (STATE.unusedQuestions.length < 4) {
+                STATE.unusedQuestions = shuffle(questionBank);
+            }
+        }
 
         function initSafe() {
-            if (unusedQuestions.length < 4) {
-                unusedQuestions = [...questionBank].sort(() => 0.5 - Math.random());
-            }
+            refillQuestionPoolIfNeeded();
+            const selected = STATE.unusedQuestions.splice(0, 4);
 
-            let selected = unusedQuestions.splice(0, 4);
-            let listHtml = '';
+            STATE.correctCode = selected.map((item) => item.a);
+            STATE.currentCode = [0, 0, 0, 0];
+            STATE.isLocked = true;
 
-            selected.forEach((item, index) => {
-                listHtml += `<li>${item.q}</li>`;
-                CORRECT_CODE[index] = item.a;
-            });
+            elements.questionsList.innerHTML = selected.map((item) => `<li>${item.q}</li>`).join('');
+            renderDigits();
+            setInteractiveState(true);
+            updateStatus('Введи 4 цифри та поверни рукоятку.');
+        }
 
-            document.getElementById('questions-list').innerHTML = listHtml;
-            currentCode = [0, 0, 0, 0];
+        function clearTimers() {
+            clearTimeout(STATE.errorTimeout);
+            STATE.openingTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
+            STATE.openingTimeouts = [];
         }
 
         function rollDigitsToZero() {
-            for (let i = 0; i < 4; i++) {
-                let interval = setInterval(() => {
-                    if (currentCode[i] > 0) {
-                        currentCode[i]--;
-                        document.getElementById(`digit-${i}`).innerText = currentCode[i];
+            STATE.currentCode.forEach((value, index) => {
+                let currentValue = value;
+                const intervalId = setInterval(() => {
+                    if (currentValue > 0) {
+                        currentValue -= 1;
+                        STATE.currentCode[index] = currentValue;
+                        elements.digitDisplays[index].textContent = currentValue;
                     } else {
-                        clearInterval(interval);
+                        clearInterval(intervalId);
                     }
-                }, 90);
-            }
+                }, 70);
+            });
         }
 
         function resetSafe() {
-            const door = document.getElementById('door');
-            const btn = document.querySelector('.next-btn');
-            const qContainer = document.getElementById('questions-container');
-
-            btn.classList.remove('show');
-            door.classList.remove('open');
-
+            clearTimers();
+            elements.restartButton.classList.remove('show');
+            elements.door.classList.remove('open', 'success', 'error');
+            setInteractiveState(false);
             rollDigitsToZero();
+            updateStatus('Готуємо нові загадки...');
 
-            qContainer.classList.remove('dropping');
-            qContainer.classList.add('tearing');
+            elements.questionsContainer.classList.remove('dropping');
+            elements.questionsContainer.classList.add('tearing');
 
-            setTimeout(() => {
-                door.classList.remove('success');
+            window.setTimeout(() => {
                 initSafe();
-                isLocked = true;
-
-                qContainer.classList.remove('tearing');
-                qContainer.classList.add('dropping');
-            }, 1500);
+                elements.questionsContainer.classList.remove('tearing');
+                elements.questionsContainer.classList.add('dropping');
+            }, 900);
         }
 
         function changeDigit(index, delta) {
-            if (!isLocked) return;
-
-            currentCode[index] += delta;
-            if (currentCode[index] > 9) currentCode[index] = 0;
-            if (currentCode[index] < 0) currentCode[index] = 9;
-
-            const el = document.getElementById(`digit-${index}`);
-            el.innerText = currentCode[index];
-
-            // Анімація підсвічування при зміні цифри
-            el.classList.remove('changed');
-            void el.offsetWidth;
-            el.classList.add('changed');
+            if (!STATE.isLocked) return;
+            STATE.currentCode[index] = (STATE.currentCode[index] + delta + 10) % 10;
+            elements.digitDisplays[index].textContent = STATE.currentCode[index];
+            animateDigit(index);
+            updateStatus('Код змінено. Натисни на рукоятку, щоб перевірити.');
         }
 
         function spawnSparks(x, y) {
-            const safeWrapper = document.getElementById('safe-wrapper');
-            const rect = safeWrapper.getBoundingClientRect();
+            const rect = elements.safeWrapper.getBoundingClientRect();
 
-            for (let i = 0; i < 18; i++) {
+            for (let i = 0; i < 18; i += 1) {
                 const spark = document.createElement('div');
                 spark.className = 'spark';
                 const angle = (Math.PI * 2 / 18) * i + (Math.random() - 0.5) * 0.5;
-                const dist = 50 + Math.random() * 80;
-                spark.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
-                spark.style.setProperty('--ty', `${Math.sin(angle) * dist - 40}px`);
+                const distance = 50 + Math.random() * 80;
+                spark.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                spark.style.setProperty('--ty', `${Math.sin(angle) * distance - 40}px`);
                 spark.style.setProperty('--dur', `${0.5 + Math.random() * 0.6}s`);
                 spark.style.left = `${x - rect.left}px`;
                 spark.style.top = `${y - rect.top}px`;
                 spark.style.background = `hsl(${40 + Math.random() * 20}, 100%, ${60 + Math.random() * 30}%)`;
                 spark.style.width = `${2 + Math.random() * 4}px`;
                 spark.style.height = spark.style.width;
-                safeWrapper.appendChild(spark);
-                setTimeout(() => spark.remove(), 1400);
+                elements.safeWrapper.appendChild(spark);
+                window.setTimeout(() => spark.remove(), 1400);
             }
         }
 
         function attemptOpen() {
-            if (!isLocked) return;
+            if (!STATE.isLocked) return;
 
-            const door = document.getElementById('door');
-            const handleWrapper = door.querySelector('.handle-wrapper');
+            const handleWrapper = elements.openButton.closest('.handle-wrapper');
             const rect = handleWrapper.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-
-            const isCorrect = currentCode.every((val, index) => val === CORRECT_CODE[index]);
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const isCorrect = STATE.currentCode.every((value, index) => value === STATE.correctCode[index]);
 
             if (isCorrect) {
-                isLocked = false;
-                door.classList.add('success');
-                spawnSparks(cx, cy);
+                STATE.isLocked = false;
+                setInteractiveState(false);
+                elements.door.classList.add('success');
+                updateStatus('Код правильний. Сейф відчиняється...');
+                spawnSparks(centerX, centerY);
 
-                setTimeout(() => {
-                    door.classList.add('open');
+                STATE.openingTimeouts.push(window.setTimeout(() => {
+                    elements.door.classList.add('open');
+                }, 450));
 
-                    setTimeout(() => {
-                        document.querySelector('.next-btn').classList.add('show');
-                    }, 3000);
-                }, 500);
-
+                STATE.openingTimeouts.push(window.setTimeout(() => {
+                    elements.restartButton.classList.add('show');
+                    updateStatus('Сейф відкрито! Можна зіграти ще раз.');
+                }, 2200));
             } else {
-                door.classList.remove('error');
-                void door.offsetWidth;
-                door.classList.add('error');
+                elements.door.classList.remove('error');
+                void elements.door.offsetWidth;
+                elements.door.classList.add('error');
 
-                clearTimeout(errorTimeout);
-                errorTimeout = setTimeout(() => {
-                    door.classList.remove('error');
-                }, 3000);
+                clearTimeout(STATE.errorTimeout);
+                STATE.errorTimeout = window.setTimeout(() => {
+                    elements.door.classList.remove('error');
+                }, 900);
             }
         }
 
-        document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+        function onDigitButtonClick(event) {
+            const button = event.target.closest('.digit-btn');
+            if (!button) return;
+            const group = button.closest('.digit-group');
+            const index = Number(group.dataset.index);
+            const delta = button.dataset.action === 'up' ? 1 : -1;
+            changeDigit(index, delta);
+        }
 
-        window.onload = initSafe;
+        function onKeyDown(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                const group = event.target.closest('.digit-group');
+                if (group && event.target.matches('.digit-btn')) {
+                    event.preventDefault();
+                }
+            }
+        }
+
+        elements.restartButton.addEventListener('click', resetSafe);
+        elements.openButton.addEventListener('click', attemptOpen);
+        document.querySelector('.digits').addEventListener('click', onDigitButtonClick);
+        document.querySelector('.digits').addEventListener('keydown', onKeyDown);
+        document.addEventListener('dblclick', (event) => event.preventDefault(), { passive: false });
+        window.addEventListener('load', initSafe);
     </script>
 </body>
 

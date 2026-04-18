@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://milamiplay.github.io/sitemap.xml
