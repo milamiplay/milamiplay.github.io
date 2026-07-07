@@ -226,16 +226,36 @@ function computeMax() {
 }
 
 // ── Colour scale ───────────────────────────────────────────────────────────
+const COOL_SIGNED_PALETTES = new Set([
+    'Blues', 'Greens', 'YlGnBu', 'GnBu', 'BuGn', 'YlGn', 'Cool',
+    'BuPu', 'Viridis', 'Cividis',
+]);
+
+function interpolatorForPalette(name, fallback = 'YlGnBu') {
+    return d3[`interpolate${name}`] || d3[`interpolate${fallback}`];
+}
+
+function signedDeltaInterpolators() {
+    const positive = interpolatorForPalette(state.palette, 'YlOrRd');
+    const negativePalette = COOL_SIGNED_PALETTES.has(state.palette) ? 'Oranges' : 'Blues';
+    return {
+        negative: interpolatorForPalette(negativePalette, 'Blues'),
+        positive,
+    };
+}
+
 function colorForValue(v, maxV) {
     if (v === null) return null;
     if (state.colorBy === 'delta' && state.signedDeltaColors) {
+        if (v === 0) return '#f8fafc';
         const lo = state.colorMin / 100;
         const hi = state.colorMax / 100;
         const frac = Math.min(Math.abs(v) / maxV, 1);
         const t = lo + (hi - lo) * frac;
-        return v < 0 ? d3.interpolateBlues(t) : d3.interpolateYlOrRd(t);
+        const signed = signedDeltaInterpolators();
+        return v < 0 ? signed.negative(t) : signed.positive(t);
     }
-    const interpolator = d3[`interpolate${state.palette}`];
+    const interpolator = interpolatorForPalette(state.palette);
     if (!interpolator) return null;
     const frac = Math.min(Math.abs(v) / maxV, 1);
     const lo   = state.colorMin / 100;
@@ -245,17 +265,18 @@ function colorForValue(v, maxV) {
 
 // ── Legend ─────────────────────────────────────────────────────────────────
 function updateLegend(maxV) {
-    const interpolator = d3[`interpolate${state.palette}`];
+    const interpolator = interpolatorForPalette(state.palette);
     const lo = state.colorMin / 100;
     const hi = state.colorMax / 100;
     const stops = 14;
     let css;
     if (state.colorBy === 'delta' && state.signedDeltaColors) {
+        const signed = signedDeltaInterpolators();
         const neg = Array.from({ length: stops + 1 }, (_, i) =>
-            d3.interpolateBlues(hi - (hi - lo) * (i / stops))
+            signed.negative(hi - (hi - lo) * (i / stops))
         );
         const pos = Array.from({ length: stops + 1 }, (_, i) =>
-            d3.interpolateYlOrRd(lo + (hi - lo) * (i / stops))
+            signed.positive(lo + (hi - lo) * (i / stops))
         );
         css = [...neg, '#f8fafc', ...pos].join(', ');
     } else {
