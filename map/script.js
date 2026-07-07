@@ -321,7 +321,7 @@ function updateMap() {
             nEl.setAttribute('dy', (0.62 + state.priceLineGap) + 'em');
             nEl.setAttribute('fill', hipiTextColor);
             nEl.style.stroke = strokeColorFor(hipiTextColor, bgColor);
-            nEl.textContent  = vals.n === null ? '' : formatMoney(vals.n);
+            nEl.textContent  = vals.n === null ? 'н/д' : formatMoney(vals.n);
         } else {
             const raw   = state.colorBy === 't' ? vals.t : vals.n;
             const color = state.colorBy === 't' ? state.tenderColor : state.hipiColor;
