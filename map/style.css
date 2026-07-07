@@ -2,9 +2,12 @@
 :root {
     --price-font-size:  11.4px;
     --name-font-size:   8.5px;
-    --price-stroke:     0px;   /* width of white halo around price values */
-    --name-stroke:      0px;   /* width of halo around oblast names */
+    --price-stroke:     2.4px;
+    --name-stroke:      2.2px;
     --region-stroke:    1px;
+    --map-font-family:  Arial, sans-serif;
+    --price-font-weight: 800;
+    --name-font-weight:  700;
 }
 
 * { box-sizing: border-box; }
@@ -33,7 +36,8 @@ body {
 /* stroke WIDTH comes from CSS variables so sliders take effect instantly.     */
 .region-name {
     font-size:      var(--name-font-size);
-    font-weight:    700;
+    font-family:    var(--map-font-family);
+    font-weight:    var(--name-font-weight);
     pointer-events: none;
     text-anchor:    middle;
     paint-order:    stroke fill;
@@ -43,7 +47,8 @@ body {
 }
 .region-value {
     font-size:      var(--price-font-size);
-    font-weight:    800;
+    font-family:    var(--map-font-family);
+    font-weight:    var(--price-font-weight);
     pointer-events: none;
     text-anchor:    middle;
     paint-order:    stroke fill;

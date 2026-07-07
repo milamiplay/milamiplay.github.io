@@ -62,6 +62,25 @@
                     <input type="color" id="title-accent-color" value="#f5a623">
                     <input type="text" class="hex-input" id="title-accent-color-hex" value="#f5a623" maxlength="7">
                 </div>
+                <div class="color-row">
+                    <label>Колір заголовка</label>
+                    <input type="color" id="title-color" value="#241a4d">
+                    <input type="text" class="hex-input" id="title-color-hex" value="#241a4d" maxlength="7">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Розмір заголовка
+                        <span id="title-font-val" class="val-badge">30px</span>
+                    </label>
+                    <input type="range" id="title-font-size" min="18" max="48" step="1" value="30">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Інтерліньяж заголовка
+                        <span id="title-line-height-val" class="val-badge">1.2</span>
+                    </label>
+                    <input type="range" id="title-line-height" min="0.95" max="1.7" step="0.05" value="1.2">
+                </div>
             </div>
         </details>
 
@@ -84,6 +103,44 @@
                 <div>
                     <label class="f-label">Одиниця виміру (шкала)</label>
                     <input id="legend-unit" type="text" class="f-input">
+                </div>
+                <div class="color-row">
+                    <label>Колір опису</label>
+                    <input type="color" id="description-color" value="#475569">
+                    <input type="text" class="hex-input" id="description-color-hex" value="#475569" maxlength="7">
+                </div>
+                <div class="color-row">
+                    <label>Колір легенди</label>
+                    <input type="color" id="legend-color" value="#1e293b">
+                    <input type="text" class="hex-input" id="legend-color-hex" value="#1e293b" maxlength="7">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Розмір опису
+                        <span id="description-font-val" class="val-badge">11px</span>
+                    </label>
+                    <input type="range" id="description-font-size" min="8" max="18" step="0.5" value="11">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Інтерліньяж опису
+                        <span id="description-line-height-val" class="val-badge">1.65</span>
+                    </label>
+                    <input type="range" id="description-line-height" min="1" max="2.4" step="0.05" value="1.65">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Розмір легенди
+                        <span id="legend-font-val" class="val-badge">11px</span>
+                    </label>
+                    <input type="range" id="legend-font-size" min="8" max="18" step="0.5" value="11">
+                </div>
+                <div>
+                    <label class="f-label">
+                        Інтерліньяж легенди
+                        <span id="legend-line-height-val" class="val-badge">1.4</span>
+                    </label>
+                    <input type="range" id="legend-line-height" min="1" max="2.2" step="0.05" value="1.4">
                 </div>
             </div>
         </details>
@@ -127,6 +184,10 @@
                     </select>
                     <div id="palette-preview"></div>
                 </div>
+                <label class="check-row">
+                    <input type="checkbox" id="signed-delta-colors" checked>
+                    <span>Розрізняти знак дельти: нижче / вище НІРІ</span>
+                </label>
                 <div>
                     <label class="f-label">
                         Мін. насиченість (мала дельта)
@@ -147,6 +208,11 @@
                         <span id="region-stroke-val" class="val-badge">1px</span>
                     </label>
                     <input type="range" id="region-stroke" min="0" max="4" step="0.5" value="1">
+                </div>
+                <div class="color-row">
+                    <label>Колір меж регіонів</label>
+                    <input type="color" id="region-stroke-color" value="#ffffff">
+                    <input type="text" class="hex-input" id="region-stroke-color-hex" value="#ffffff" maxlength="7">
                 </div>
                 <div class="color-row" style="margin-top:4px;">
                     <label>Фон полотна</label>
@@ -175,8 +241,21 @@
                     <input type="color" id="hipi-color" value="#b8720c">
                     <input type="text" class="hex-input" id="hipi-color-hex" value="#b8720c" maxlength="7">
                 </div>
+                <label class="check-row">
+                    <input type="checkbox" id="smart-contrast" checked>
+                    <span>Автоконтраст тексту до заливки області</span>
+                </label>
 
                 <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:8px;margin-top:2px;">
+                    <div>
+                        <label class="f-label">Шрифт підписів на мапі</label>
+                        <select id="map-font-family" class="f-input">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Inter', Arial, sans-serif">Inter / Arial</option>
+                            <option value="'Trebuchet MS', Arial, sans-serif">Trebuchet MS</option>
+                            <option value="Georgia, serif">Georgia</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="f-label">
                             Розмір шрифту цін
@@ -190,6 +269,34 @@
                             <span id="name-font-val" class="val-badge">8.5px</span>
                         </label>
                         <input type="range" id="name-font-size" min="5" max="14" step="0.5" value="8.5">
+                    </div>
+                    <div>
+                        <label class="f-label">
+                            Жирність цін
+                            <span id="price-weight-val" class="val-badge">800</span>
+                        </label>
+                        <input type="range" id="price-font-weight" min="400" max="900" step="100" value="800">
+                    </div>
+                    <div>
+                        <label class="f-label">
+                            Жирність назв
+                            <span id="name-weight-val" class="val-badge">700</span>
+                        </label>
+                        <input type="range" id="name-font-weight" min="400" max="900" step="100" value="700">
+                    </div>
+                    <div>
+                        <label class="f-label">
+                            Інтерліньяж цін
+                            <span id="price-line-gap-val" class="val-badge">1.05em</span>
+                        </label>
+                        <input type="range" id="price-line-gap" min="0.75" max="1.6" step="0.05" value="1.05">
+                    </div>
+                    <div>
+                        <label class="f-label">
+                            Відступ назви від цін
+                            <span id="label-gap-val" class="val-badge">0.85em</span>
+                        </label>
+                        <input type="range" id="label-gap" min="0.35" max="1.4" step="0.05" value="0.85">
                     </div>
                     <div>
                         <label class="f-label">
@@ -248,7 +355,7 @@
         <!-- Left column: title · description · legend -->
         <div style="width:220px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;">
 
-            <h1 style="font-size:30px;font-weight:900;line-height:1.2;color:#241a4d;margin:0;">
+            <h1 id="display-title" style="font-size:30px;font-weight:900;line-height:1.2;color:#241a4d;margin:0;">
                 <span id="display-title1"></span><br>
                 <span id="display-accent" style="color:#f5a623;"></span><span id="display-rest"></span>
             </h1>
@@ -257,7 +364,7 @@
                style="font-size:11px;color:#475569;margin-top:16px;white-space:pre-line;line-height:1.65;"></p>
 
             <!-- Legend: colour dots -->
-            <div style="display:flex;gap:18px;margin-top:24px;font-size:11px;font-weight:600;color:#374151;">
+            <div id="series-legend" style="display:flex;gap:18px;margin-top:24px;font-size:11px;font-weight:600;color:#374151;">
                 <div id="tender-legend-row" style="display:flex;align-items:center;gap:6px;">
                     <span id="dot-tender"
                           style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#241a4d;border:1.5px solid rgba(0,0,0,0.18);flex-shrink:0;"></span>
@@ -279,7 +386,7 @@
                      style="display:flex;justify-content:space-between;font-size:10px;color:#64748b;margin-top:5px;"></div>
                 <div style="display:flex;align-items:center;gap:7px;margin-top:10px;">
                     <div style="width:16px;height:16px;border-radius:3px;border:1px solid #cbd5e1;background:#ebebee;flex-shrink:0;"></div>
-                    <span style="font-size:11px;color:#64748b;">н/д</span>
+                    <span id="no-data-label" style="font-size:11px;color:#64748b;">н/д</span>
                 </div>
             </div>
 

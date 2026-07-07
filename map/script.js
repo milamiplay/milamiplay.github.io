@@ -16,14 +16,17 @@ const REGIONS = [
 
 const ALIASES    = { 'UA-30': 'UA-32', 'UA-40': 'UA-43' };
 const STORAGE_KEY = 'ua-price-map-state-v2';
+const VISUAL_DEFAULTS_VERSION = 3;
 
 // ── State ──────────────────────────────────────────────────────────────────
 const state = {
+    visualDefaultsVersion: VISUAL_DEFAULTS_VERSION,
     data:             REGIONS.reduce((acc, r) => ({ ...acc, [r.code]: { t: null, n: null } }), {}),
     colorBy:          'delta',   // 'delta' | 't' | 'n'
-    palette:          'Purples',
-    colorMin:         30,
-    colorMax:         100,
+    palette:          'YlGnBu',
+    colorMin:         18,
+    colorMax:         82,
+    signedDeltaColors:true,
     // text colours
     regionNameColor:  '#241a4d',
     tenderColor:      '#241a4d',
@@ -32,22 +35,50 @@ const state = {
     // typography
     priceFontSize:    11.4,
     nameFontSize:     8.5,
-    priceStroke:      0,         // halo width for price values (0 = off)
-    nameStroke:       0,         // halo width for oblast names (0 = off)
+    priceStroke:      2.4,       // halo width for price values (0 = off)
+    nameStroke:       2.2,       // halo width for oblast names (0 = off)
+    textContrastMode: 'smart',   // 'smart' | 'manual'
+    mapFontFamily:    'Arial, sans-serif',
+    priceFontWeight:  800,
+    nameFontWeight:   700,
+    priceLineGap:     1.05,
+    labelGap:         0.85,
     showRegionNames:  true,
     // canvas / map
     canvasBg:         '#ffffff',
     regionStroke:     1,         // border between regions in px
+    regionStrokeColor:'#ffffff',
     // legend & labels
     legendUnit:       'грн/т з ПДВ',
     labelTender:      'Тендер',
     labelNipi:        'НІРІ',
+    titleColor:       '#241a4d',
+    titleFontSize:    30,
+    titleLineHeight:  1.2,
+    descriptionColor: '#475569',
+    descriptionFontSize: 11,
+    descriptionLineHeight: 1.65,
+    legendColor:      '#1e293b',
+    legendFontSize:   11,
+    legendLineHeight: 1.4,
     // title & description
     title1:           'СЕРЕДНІ ЦІНИ',
     titleAccent:      'АРМАТУРИ',
     titleRest:        '',
     description:      'Дані: арматура класу А-ІІІ, А400С, А500С.\nПеріод: вересень 2025 — квітень 2026.\nНа карті показано дельту між середньою ціною тендеру та середньою ціною НІРІ, грн/т з ПДВ.',
 };
+
+function upgradeVisualDefaults(saved = {}) {
+    if ((saved.visualDefaultsVersion || 0) >= VISUAL_DEFAULTS_VERSION) return;
+    if (saved.palette === undefined || saved.palette === 'Purples') state.palette = 'YlGnBu';
+    if (saved.colorMin === undefined || saved.colorMin === 30) state.colorMin = 18;
+    if (saved.colorMax === undefined || saved.colorMax === 100) state.colorMax = 82;
+    if (saved.signedDeltaColors === undefined) state.signedDeltaColors = true;
+    if (saved.priceStroke === undefined || saved.priceStroke === 0) state.priceStroke = 2.4;
+    if (saved.nameStroke === undefined || saved.nameStroke === 0) state.nameStroke = 2.2;
+    if (saved.textContrastMode === undefined) state.textContrastMode = 'smart';
+    state.visualDefaultsVersion = VISUAL_DEFAULTS_VERSION;
+}
 
 // ── Persistence ────────────────────────────────────────────────────────────
 function loadState() {
@@ -58,6 +89,7 @@ function loadState() {
             Object.keys(state).filter(k => k !== 'data').forEach(k => {
                 if (v2[k] !== undefined) state[k] = v2[k];
             });
+            upgradeVisualDefaults(v2);
             return;
         }
         // Migrate price data from legacy v1
@@ -65,6 +97,7 @@ function loadState() {
         if (v1) {
             if (v1.data)    Object.keys(state.data).forEach(k => { if (v1.data[k]) state.data[k] = v1.data[k]; });
             if (v1.palette) state.palette = v1.palette;
+            upgradeVisualDefaults(v1);
         }
     } catch (_) {}
 }
@@ -105,18 +138,75 @@ function updateCSSVars() {
     r.setProperty('--price-stroke',    state.priceStroke   + 'px');
     r.setProperty('--name-stroke',     state.nameStroke    + 'px');
     r.setProperty('--region-stroke',   state.regionStroke  + 'px');
+    r.setProperty('--map-font-family', state.mapFontFamily);
+    r.setProperty('--price-font-weight', state.priceFontWeight);
+    r.setProperty('--name-font-weight', state.nameFontWeight);
     document.getElementById('capture-area').style.background = state.canvasBg;
+    document.querySelectorAll('#map-paths .map-region').forEach(el => {
+        el.style.stroke = state.regionStrokeColor;
+    });
 }
 
-// Returns a contrasting stroke colour for any given text colour.
-// White/light text → dark stroke; dark text → light stroke.
-function strokeColorFor(hex) {
-    if (!hex || hex.length < 7) return 'rgba(255,255,255,0.9)';
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-    return lum > 140 ? 'rgba(20,20,20,0.88)' : 'rgba(255,255,255,0.9)';
+function cssColorToHex(color) {
+    if (!color) return null;
+    if (/^#[0-9a-fA-F]{6}$/.test(color)) return color;
+    const match = String(color).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!match) return null;
+    return '#' + [match[1], match[2], match[3]]
+        .map(v => Number(v).toString(16).padStart(2, '0'))
+        .join('');
+}
+
+function hexToRgb(hex) {
+    const safeHex = cssColorToHex(hex);
+    if (!safeHex) return null;
+    return {
+        r: parseInt(safeHex.slice(1, 3), 16),
+        g: parseInt(safeHex.slice(3, 5), 16),
+        b: parseInt(safeHex.slice(5, 7), 16),
+    };
+}
+
+function relativeLuminance(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 1;
+    const linear = [rgb.r, rgb.g, rgb.b].map(v => {
+        const c = v / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+function contrastRatio(a, b) {
+    const l1 = relativeLuminance(a);
+    const l2 = relativeLuminance(b);
+    const hi = Math.max(l1, l2);
+    const lo = Math.min(l1, l2);
+    return (hi + 0.05) / (lo + 0.05);
+}
+
+function bestTextColorFor(bgColor) {
+    const bg = cssColorToHex(bgColor) || '#ffffff';
+    return contrastRatio('#111827', bg) >= contrastRatio('#ffffff', bg) ? '#111827' : '#ffffff';
+}
+
+function readableTextColor(preferred, bgColor, minRatio = 4.5) {
+    const bg = cssColorToHex(bgColor) || '#ffffff';
+    const pref = cssColorToHex(preferred) || preferred;
+    if (state.textContrastMode === 'manual') return pref;
+    return contrastRatio(pref, bg) >= minRatio ? pref : bestTextColorFor(bg);
+}
+
+function strokeColorFor(textColor, bgColor) {
+    const bg = cssColorToHex(bgColor);
+    if (bg && contrastRatio(textColor, bg) >= 7) {
+        return relativeLuminance(textColor) > relativeLuminance(bg)
+            ? 'rgba(17,24,39,0.72)'
+            : 'rgba(255,255,255,0.88)';
+    }
+    return relativeLuminance(textColor) > 0.45
+        ? 'rgba(17,24,39,0.82)'
+        : 'rgba(255,255,255,0.92)';
 }
 
 // ── Mode-aware value helpers ───────────────────────────────────────────────
@@ -138,6 +228,13 @@ function computeMax() {
 // ── Colour scale ───────────────────────────────────────────────────────────
 function colorForValue(v, maxV) {
     if (v === null) return null;
+    if (state.colorBy === 'delta' && state.signedDeltaColors) {
+        const lo = state.colorMin / 100;
+        const hi = state.colorMax / 100;
+        const frac = Math.min(Math.abs(v) / maxV, 1);
+        const t = lo + (hi - lo) * frac;
+        return v < 0 ? d3.interpolateBlues(t) : d3.interpolateYlOrRd(t);
+    }
     const interpolator = d3[`interpolate${state.palette}`];
     if (!interpolator) return null;
     const frac = Math.min(Math.abs(v) / maxV, 1);
@@ -149,13 +246,24 @@ function colorForValue(v, maxV) {
 // ── Legend ─────────────────────────────────────────────────────────────────
 function updateLegend(maxV) {
     const interpolator = d3[`interpolate${state.palette}`];
-    if (!interpolator) return;
     const lo = state.colorMin / 100;
     const hi = state.colorMax / 100;
     const stops = 14;
-    const css = Array.from({ length: stops + 1 }, (_, i) =>
-        interpolator(lo + (hi - lo) * (i / stops))
-    ).join(', ');
+    let css;
+    if (state.colorBy === 'delta' && state.signedDeltaColors) {
+        const neg = Array.from({ length: stops + 1 }, (_, i) =>
+            d3.interpolateBlues(hi - (hi - lo) * (i / stops))
+        );
+        const pos = Array.from({ length: stops + 1 }, (_, i) =>
+            d3.interpolateYlOrRd(lo + (hi - lo) * (i / stops))
+        );
+        css = [...neg, '#f8fafc', ...pos].join(', ');
+    } else {
+        if (!interpolator) return;
+        css = Array.from({ length: stops + 1 }, (_, i) =>
+            interpolator(lo + (hi - lo) * (i / stops))
+        ).join(', ');
+    }
     const grad = `linear-gradient(to right, ${css})`;
     document.getElementById('legend-gradient').style.background = grad;
     document.getElementById('palette-preview').style.background = grad;
@@ -164,7 +272,10 @@ function updateLegend(maxV) {
     ticksEl.innerHTML = '';
     for (let i = 0; i <= 5; i++) {
         const span = document.createElement('span');
-        span.textContent = Math.round((maxV / 5) * i).toLocaleString('uk-UA');
+        const raw = state.colorBy === 'delta' && state.signedDeltaColors
+            ? -maxV + (maxV * 2 / 5) * i
+            : (maxV / 5) * i;
+        span.textContent = Math.round(raw).toLocaleString('uk-UA');
         ticksEl.appendChild(span);
     }
 }
@@ -179,6 +290,7 @@ function updateMap() {
         const code = codeForPathId(el.id);
         const v    = valueForMode(code);
         const fill = colorForValue(v, maxV);
+        const bgColor = fill || '#ebebee';
         el.classList.toggle('no-data', v === null);
         el.style.fill = fill || '';
 
@@ -191,26 +303,31 @@ function updateMap() {
         const nEl    = label.querySelector('.region-hipi');
 
         // Region names
-        nameEl.setAttribute('fill', state.regionNameColor);
-        nameEl.style.stroke  = strokeColorFor(state.regionNameColor);
-        nameEl.setAttribute('dy', isDelta ? '-0.9em' : '-0.5em');
+        const nameColor = readableTextColor(state.regionNameColor, bgColor, 4.5);
+        nameEl.setAttribute('fill', nameColor);
+        nameEl.style.stroke  = strokeColorFor(nameColor, bgColor);
+        nameEl.setAttribute('dy', isDelta ? `-${state.labelGap}em` : '-0.48em');
         nameEl.style.display = state.showRegionNames ? '' : 'none';
 
         // Price rows
-        tEl.setAttribute('dy', isDelta ? '0.6em' : '0.8em');
+        tEl.setAttribute('dy', isDelta ? '0.62em' : '0.86em');
 
         if (isDelta) {
-            tEl.setAttribute('fill', state.tenderColor);
-            tEl.style.stroke = strokeColorFor(state.tenderColor);
+            const tenderTextColor = readableTextColor(state.tenderColor, bgColor, 4.5);
+            const hipiTextColor = readableTextColor(state.hipiColor, bgColor, 4.5);
+            tEl.setAttribute('fill', tenderTextColor);
+            tEl.style.stroke = strokeColorFor(tenderTextColor, bgColor);
             tEl.textContent  = vals.t === null ? 'н/д' : formatMoney(vals.t);
-            nEl.setAttribute('fill', state.hipiColor);
-            nEl.style.stroke = strokeColorFor(state.hipiColor);
+            nEl.setAttribute('dy', (0.62 + state.priceLineGap) + 'em');
+            nEl.setAttribute('fill', hipiTextColor);
+            nEl.style.stroke = strokeColorFor(hipiTextColor, bgColor);
             nEl.textContent  = vals.n === null ? '' : formatMoney(vals.n);
         } else {
             const raw   = state.colorBy === 't' ? vals.t : vals.n;
             const color = state.colorBy === 't' ? state.tenderColor : state.hipiColor;
-            tEl.setAttribute('fill', color);
-            tEl.style.stroke = strokeColorFor(color);
+            const textColor = readableTextColor(color, bgColor, 4.5);
+            tEl.setAttribute('fill', textColor);
+            tEl.style.stroke = strokeColorFor(textColor, bgColor);
             tEl.textContent  = raw === null ? 'н/д' : formatMoney(raw);
             nEl.textContent  = '';
         }
@@ -289,13 +406,39 @@ const LEGEND_TITLE = {
 };
 
 function syncDisplay() {
-    document.getElementById('display-title1').textContent   = state.title1;
-    document.getElementById('display-accent').textContent   = state.titleAccent + (state.titleRest ? ' ' : '');
-    document.getElementById('display-accent').style.color   = state.titleAccentColor;
-    document.getElementById('display-rest').textContent     = state.titleRest;
-    document.getElementById('display-description').textContent = state.description;
-    document.getElementById('display-legend-title').textContent =
-        LEGEND_TITLE[state.colorBy](state.legendUnit);
+    const titleEl = document.getElementById('display-title');
+    const title1El = document.getElementById('display-title1');
+    const accentEl = document.getElementById('display-accent');
+    const restEl = document.getElementById('display-rest');
+    const descriptionEl = document.getElementById('display-description');
+    const legendTitleEl = document.getElementById('display-legend-title');
+    const legendTicksEl = document.getElementById('legend-ticks');
+    const seriesLegendEl = document.getElementById('series-legend');
+    const noDataLabelEl = document.getElementById('no-data-label');
+
+    title1El.textContent = state.title1;
+    accentEl.textContent = state.titleAccent + (state.titleRest ? ' ' : '');
+    accentEl.style.color = state.titleAccentColor;
+    restEl.textContent = state.titleRest;
+    titleEl.style.color = state.titleColor;
+    titleEl.style.fontSize = state.titleFontSize + 'px';
+    titleEl.style.lineHeight = state.titleLineHeight;
+
+    descriptionEl.textContent = state.description;
+    descriptionEl.style.color = state.descriptionColor;
+    descriptionEl.style.fontSize = state.descriptionFontSize + 'px';
+    descriptionEl.style.lineHeight = state.descriptionLineHeight;
+
+    legendTitleEl.textContent = LEGEND_TITLE[state.colorBy](state.legendUnit);
+    legendTitleEl.style.color = state.legendColor;
+    legendTitleEl.style.fontSize = state.legendFontSize + 'px';
+    legendTitleEl.style.lineHeight = state.legendLineHeight;
+    legendTicksEl.style.color = state.legendColor;
+    legendTicksEl.style.fontSize = Math.max(8, state.legendFontSize - 1) + 'px';
+    seriesLegendEl.style.color = state.legendColor;
+    seriesLegendEl.style.fontSize = state.legendFontSize + 'px';
+    noDataLabelEl.style.color = state.legendColor;
+    noDataLabelEl.style.fontSize = state.legendFontSize + 'px';
     document.getElementById('label-tender-display').textContent = state.labelTender;
     document.getElementById('label-nipi-display').textContent   = state.labelNipi;
     document.getElementById('dot-tender').style.background = state.tenderColor;
@@ -318,6 +461,7 @@ function syncUIFromState() {
     set('title-rest',            state.titleRest);
     set('description',           state.description);
     set('palette-select',        state.palette);
+    setChecked('signed-delta-colors', state.signedDeltaColors);
     set('color-min',             state.colorMin);
     set('color-max',             state.colorMax);
     setText('color-min-val',     state.colorMin + '%');
@@ -326,18 +470,48 @@ function syncUIFromState() {
     set('canvas-bg-hex',         state.canvasBg);
     set('region-stroke',         state.regionStroke);
     setText('region-stroke-val', state.regionStroke + 'px');
+    set('region-stroke-color',   state.regionStrokeColor);
+    set('region-stroke-color-hex', state.regionStrokeColor);
     set('region-name-color',     state.regionNameColor);
     set('region-name-color-hex', state.regionNameColor);
     set('tender-color',          state.tenderColor);
     set('tender-color-hex',      state.tenderColor);
     set('hipi-color',            state.hipiColor);
     set('hipi-color-hex',        state.hipiColor);
+    setChecked('smart-contrast', state.textContrastMode === 'smart');
+    set('map-font-family',       state.mapFontFamily);
     set('title-accent-color',    state.titleAccentColor);
     set('title-accent-color-hex', state.titleAccentColor);
+    set('title-color',           state.titleColor);
+    set('title-color-hex',       state.titleColor);
+    set('title-font-size',       state.titleFontSize);
+    setText('title-font-val',    state.titleFontSize + 'px');
+    set('title-line-height',     state.titleLineHeight);
+    setText('title-line-height-val', state.titleLineHeight);
+    set('description-color',     state.descriptionColor);
+    set('description-color-hex', state.descriptionColor);
+    set('description-font-size', state.descriptionFontSize);
+    setText('description-font-val', state.descriptionFontSize + 'px');
+    set('description-line-height', state.descriptionLineHeight);
+    setText('description-line-height-val', state.descriptionLineHeight);
+    set('legend-color',          state.legendColor);
+    set('legend-color-hex',      state.legendColor);
+    set('legend-font-size',      state.legendFontSize);
+    setText('legend-font-val',   state.legendFontSize + 'px');
+    set('legend-line-height',    state.legendLineHeight);
+    setText('legend-line-height-val', state.legendLineHeight);
     set('price-font-size',       state.priceFontSize);
     setText('price-font-val',    state.priceFontSize + 'px');
     set('name-font-size',        state.nameFontSize);
     setText('name-font-val',     state.nameFontSize + 'px');
+    set('price-font-weight',     state.priceFontWeight);
+    setText('price-weight-val',  state.priceFontWeight);
+    set('name-font-weight',      state.nameFontWeight);
+    setText('name-weight-val',   state.nameFontWeight);
+    set('price-line-gap',        state.priceLineGap);
+    setText('price-line-gap-val', state.priceLineGap + 'em');
+    set('label-gap',             state.labelGap);
+    setText('label-gap-val',     state.labelGap + 'em');
     set('price-stroke',          state.priceStroke);
     setText('price-stroke-val',  state.priceStroke + 'px');
     set('name-stroke',           state.nameStroke);
@@ -402,6 +576,11 @@ document.getElementById('palette-select').addEventListener('change', e => {
     updateMap();
 });
 
+document.getElementById('signed-delta-colors').addEventListener('change', e => {
+    state.signedDeltaColors = e.target.checked;
+    updateMap();
+});
+
 // Intensity sliders
 document.getElementById('color-min').addEventListener('input', e => {
     state.colorMin = +e.target.value;
@@ -448,9 +627,80 @@ document.getElementById('name-stroke').addEventListener('input', e => {
     saveState();
 });
 
+document.getElementById('price-font-weight').addEventListener('input', e => {
+    state.priceFontWeight = +e.target.value;
+    document.getElementById('price-weight-val').textContent = state.priceFontWeight;
+    updateCSSVars();
+    saveState();
+});
+document.getElementById('name-font-weight').addEventListener('input', e => {
+    state.nameFontWeight = +e.target.value;
+    document.getElementById('name-weight-val').textContent = state.nameFontWeight;
+    updateCSSVars();
+    saveState();
+});
+document.getElementById('price-line-gap').addEventListener('input', e => {
+    state.priceLineGap = +e.target.value;
+    document.getElementById('price-line-gap-val').textContent = state.priceLineGap + 'em';
+    updateMap();
+});
+document.getElementById('label-gap').addEventListener('input', e => {
+    state.labelGap = +e.target.value;
+    document.getElementById('label-gap-val').textContent = state.labelGap + 'em';
+    updateMap();
+});
+
+document.getElementById('map-font-family').addEventListener('change', e => {
+    state.mapFontFamily = e.target.value;
+    updateCSSVars();
+    saveState();
+});
+
+document.getElementById('title-font-size').addEventListener('input', e => {
+    state.titleFontSize = +e.target.value;
+    document.getElementById('title-font-val').textContent = state.titleFontSize + 'px';
+    syncDisplay();
+    saveState();
+});
+document.getElementById('title-line-height').addEventListener('input', e => {
+    state.titleLineHeight = +e.target.value;
+    document.getElementById('title-line-height-val').textContent = state.titleLineHeight;
+    syncDisplay();
+    saveState();
+});
+document.getElementById('description-font-size').addEventListener('input', e => {
+    state.descriptionFontSize = +e.target.value;
+    document.getElementById('description-font-val').textContent = state.descriptionFontSize + 'px';
+    syncDisplay();
+    saveState();
+});
+document.getElementById('description-line-height').addEventListener('input', e => {
+    state.descriptionLineHeight = +e.target.value;
+    document.getElementById('description-line-height-val').textContent = state.descriptionLineHeight;
+    syncDisplay();
+    saveState();
+});
+document.getElementById('legend-font-size').addEventListener('input', e => {
+    state.legendFontSize = +e.target.value;
+    document.getElementById('legend-font-val').textContent = state.legendFontSize + 'px';
+    syncDisplay();
+    saveState();
+});
+document.getElementById('legend-line-height').addEventListener('input', e => {
+    state.legendLineHeight = +e.target.value;
+    document.getElementById('legend-line-height-val').textContent = state.legendLineHeight;
+    syncDisplay();
+    saveState();
+});
+
 // Show/hide region names
 document.getElementById('show-names').addEventListener('change', e => {
     state.showRegionNames = e.target.checked;
+    updateMap();
+});
+
+document.getElementById('smart-contrast').addEventListener('change', e => {
+    state.textContrastMode = e.target.checked ? 'smart' : 'manual';
     updateMap();
 });
 
@@ -473,6 +723,7 @@ function bindColorPicker(pickerId, hexId, stateKey, onApply) {
 }
 
 bindColorPicker('canvas-bg', 'canvas-bg-hex', 'canvasBg', () => updateCSSVars());
+bindColorPicker('region-stroke-color', 'region-stroke-color-hex', 'regionStrokeColor', () => updateCSSVars());
 
 bindColorPicker('region-name-color', 'region-name-color-hex', 'regionNameColor', () => updateMap());
 
@@ -485,6 +736,9 @@ bindColorPicker('hipi-color', 'hipi-color-hex', 'hipiColor', v => {
     updateMap();
 });
 bindColorPicker('title-accent-color', 'title-accent-color-hex', 'titleAccentColor', () => syncDisplay());
+bindColorPicker('title-color', 'title-color-hex', 'titleColor', () => syncDisplay());
+bindColorPicker('description-color', 'description-color-hex', 'descriptionColor', () => syncDisplay());
+bindColorPicker('legend-color', 'legend-color-hex', 'legendColor', () => syncDisplay());
 
 // Bulk paste
 document.getElementById('bulk-apply').addEventListener('click', () => {
