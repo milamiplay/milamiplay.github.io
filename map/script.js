@@ -267,14 +267,6 @@ function updateLegend(maxV) {
         css = Array.from({ length: stops + 1 }, (_, i) =>
             interpolator(1 - (i / stops))
         ).join(', ');
-    } else if (state.colorBy === 'delta' && state.signedDeltaColors) {
-        const neg = Array.from({ length: stops + 1 }, (_, i) =>
-            interpolator(hi - (hi - lo) * (i / stops))
-        );
-        const pos = Array.from({ length: stops + 1 }, (_, i) =>
-            interpolator(lo + (hi - lo) * (i / stops))
-        );
-        css = [...neg, '#f8fafc', ...pos].join(', ');
     } else {
         if (!interpolator) return;
         css = Array.from({ length: stops + 1 }, (_, i) =>
@@ -289,7 +281,7 @@ function updateLegend(maxV) {
     ticksEl.innerHTML = '';
     for (let i = 0; i <= 5; i++) {
         const span = document.createElement('span');
-        const raw = state.colorBy === 'delta' && state.signedDeltaColors
+        const raw = usesDivergingScale()
             ? -maxV + (maxV * 2 / 5) * i
             : (maxV / 5) * i;
         span.textContent = Math.round(raw).toLocaleString('uk-UA');
