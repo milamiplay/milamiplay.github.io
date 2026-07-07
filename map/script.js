@@ -122,6 +122,13 @@ function codeForPathId(id) {
     return ALIASES[code] || code;
 }
 
+function pathForRegionCode(code) {
+    const direct = document.getElementById('region-' + code);
+    if (direct) return direct;
+    return Array.from(document.querySelectorAll('#map-paths .map-region'))
+        .find(el => codeForPathId(el.id) === code);
+}
+
 // Rounds up to 1/2/5 × 10^n so the colour scale always uses a meaningful range.
 function niceMax(v) {
     if (!v || v <= 0) return 10;
@@ -349,18 +356,14 @@ function updateMap() {
 function buildLabels() {
     const layer = document.getElementById('map-labels');
     layer.innerHTML = '';
-    const seen = new Set();
 
-    document.querySelectorAll('#map-paths .map-region').forEach(el => {
-        const code = codeForPathId(el.id);
-        if (seen.has(code)) return;
-        seen.add(code);
-        const region = REGIONS.find(r => r.code === code);
-        if (!region) return;
+    REGIONS.forEach(region => {
+        const el = pathForRegionCode(region.code);
+        if (!el) return;
 
         const b = el.getBBox();
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        g.setAttribute('id', 'label-' + code);
+        g.setAttribute('id', 'label-' + region.code);
         g.setAttribute('transform', `translate(${b.x + b.width / 2},${b.y + b.height / 2})`);
 
         const name = document.createElementNS('http://www.w3.org/2000/svg', 'text');
