@@ -350,12 +350,12 @@
      CANVAS  (full-screen; exported to PNG)
      ════════════════════════════════════════════════ -->
 <div id="capture-area" style="width:100vw;height:100vh;background:#fff;padding:40px;overflow:hidden;">
-    <div style="display:flex;gap:24px;height:100%;">
+    <div style="display:flex;gap:clamp(28px,3vw,56px);height:100%;">
 
         <!-- Left column: title · description · legend -->
-        <div style="width:220px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;">
+        <div style="width:clamp(300px,20vw,380px);flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;">
 
-            <h1 id="display-title" style="font-size:30px;font-weight:900;line-height:1.2;color:#241a4d;margin:0;">
+            <h1 id="display-title" style="font-size:30px;font-weight:900;line-height:1.2;color:#241a4d;margin:0;overflow-wrap:anywhere;word-break:normal;">
                 <span id="display-title1"></span><br>
                 <span id="display-accent" style="color:#f5a623;"></span><span id="display-rest"></span>
             </h1>

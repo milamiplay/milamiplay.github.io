@@ -400,7 +400,7 @@ function buildInputs() {
 
 // ── Canvas display sync ─────────────────────────────────────────────────────
 const LEGEND_TITLE = {
-    delta: unit => `Дельта ціни (тендер − НІРІ), ${unit}`,
+    delta: unit => `Різниця цін (тендер − НІРІ), ${unit}`,
     t:     unit => `Середня ціна тендеру, ${unit}`,
     n:     unit => `Середня ціна НІРІ, ${unit}`,
 };
