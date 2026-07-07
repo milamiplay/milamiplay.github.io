@@ -226,34 +226,27 @@ function computeMax() {
 }
 
 // ── Colour scale ───────────────────────────────────────────────────────────
-const COOL_SIGNED_PALETTES = new Set([
-    'Blues', 'Greens', 'YlGnBu', 'GnBu', 'BuGn', 'YlGn', 'Cool',
-    'BuPu', 'Viridis', 'Cividis',
+const DIVERGING_PALETTES = new Set([
+    'RdYlGn', 'RdYlBu', 'RdBu', 'PuOr', 'BrBG', 'PiYG', 'Spectral',
 ]);
 
 function interpolatorForPalette(name, fallback = 'YlGnBu') {
     return d3[`interpolate${name}`] || d3[`interpolate${fallback}`];
 }
 
-function signedDeltaInterpolators() {
-    const positive = interpolatorForPalette(state.palette, 'YlOrRd');
-    const negativePalette = COOL_SIGNED_PALETTES.has(state.palette) ? 'Oranges' : 'Blues';
-    return {
-        negative: interpolatorForPalette(negativePalette, 'Blues'),
-        positive,
-    };
+function usesDivergingScale() {
+    return state.colorBy === 'delta' && state.signedDeltaColors && DIVERGING_PALETTES.has(state.palette);
+}
+
+function divergingT(v, maxV) {
+    if (!maxV) return 0.5;
+    return Math.max(0, Math.min(1, 0.5 - (v / maxV) * 0.5));
 }
 
 function colorForValue(v, maxV) {
     if (v === null) return null;
-    if (state.colorBy === 'delta' && state.signedDeltaColors) {
-        if (v === 0) return '#f8fafc';
-        const lo = state.colorMin / 100;
-        const hi = state.colorMax / 100;
-        const frac = Math.min(Math.abs(v) / maxV, 1);
-        const t = lo + (hi - lo) * frac;
-        const signed = signedDeltaInterpolators();
-        return v < 0 ? signed.negative(t) : signed.positive(t);
+    if (usesDivergingScale()) {
+        return interpolatorForPalette(state.palette, 'RdYlGn')(divergingT(v, maxV));
     }
     const interpolator = interpolatorForPalette(state.palette);
     if (!interpolator) return null;
@@ -270,13 +263,16 @@ function updateLegend(maxV) {
     const hi = state.colorMax / 100;
     const stops = 14;
     let css;
-    if (state.colorBy === 'delta' && state.signedDeltaColors) {
-        const signed = signedDeltaInterpolators();
+    if (usesDivergingScale()) {
+        css = Array.from({ length: stops + 1 }, (_, i) =>
+            interpolator(1 - (i / stops))
+        ).join(', ');
+    } else if (state.colorBy === 'delta' && state.signedDeltaColors) {
         const neg = Array.from({ length: stops + 1 }, (_, i) =>
-            signed.negative(hi - (hi - lo) * (i / stops))
+            interpolator(hi - (hi - lo) * (i / stops))
         );
         const pos = Array.from({ length: stops + 1 }, (_, i) =>
-            signed.positive(lo + (hi - lo) * (i / stops))
+            interpolator(lo + (hi - lo) * (i / stops))
         );
         css = [...neg, '#f8fafc', ...pos].join(', ');
     } else {
